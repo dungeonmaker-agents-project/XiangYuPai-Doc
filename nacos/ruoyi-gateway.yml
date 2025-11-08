@@ -1,0 +1,148 @@
+# 安全配置
+security:
+  # 不校验白名单
+  ignore:
+    whites:
+      - /auth/code
+      - /auth/logout
+      - /auth/login
+      - /auth/binding/*
+      - /auth/register
+      - /auth/tenant/list
+      - /resource/sms/code
+      - /resource/sse/close
+      - /*/v3/api-docs
+      - /*/error
+      - /csrf
+      - /warm-flow-ui/**
+      # XYPai 模块白名单
+      - /xypai-auth/api/v1/auth/**
+      - /xypai-auth/doc.html
+      - /xypai-auth/doc.html/**
+      - /xypai-auth/webjars/**
+      - /xypai-auth/swagger-resources/**
+      - /xypai-auth/v3/api-docs/**
+      - /xypai-user/doc.html
+      - /xypai-user/doc.html/**
+      - /xypai-chat/doc.html
+      - /xypai-chat/doc.html/**
+      - /xypai-content/doc.html
+      - /xypai-content/doc.html/**
+      - /xypai-trade/doc.html
+      - /xypai-trade/doc.html/**
+      
+      # ====== XYPai 业务接口白名单（唯一公开接口 - 集中管理）======
+      # 用户服务 - 匿名访问（⭐ 首页模块统一入口）
+      - /xypai-user/api/v1/homepage/**             # 首页推荐接口（用户列表、精选用户等）
+      
+      # ⚠️ v2/v3 接口需要认证，不应在Gateway白名单！
+      # Gateway会验证token，验证通过后转发到后端
+      # 后端服务信任Gateway，不再重复验证
+      
+      # 内容服务 - 匿名访问（⭐ 发现模块统一入口）
+      - /xypai-content/api/v1/discovery/**         # 发现页面所有接口（热门、推荐、同城、搜索、详情等）
+
+spring:
+  cloud:
+    # 网关配置
+    gateway:
+      # 打印请求日志(自定义)
+      requestLog: true
+      server:
+        webflux:
+          discovery:
+            locator:
+              lowerCaseServiceId: true
+              enabled: true
+          routes:
+            # 认证中心
+            - id: ruoyi-auth
+              uri: lb://ruoyi-auth
+              predicates:
+                - Path=/auth/**
+              filters:
+                - StripPrefix=1
+            # 代码生成
+            - id: ruoyi-gen
+              uri: lb://ruoyi-gen
+              predicates:
+                - Path=/tool/**
+              filters:
+                - StripPrefix=1
+            # 系统模块
+            - id: ruoyi-system
+              uri: lb://ruoyi-system
+              predicates:
+                - Path=/system/**,/monitor/**
+              filters:
+                - StripPrefix=1
+            # 资源服务
+            - id: ruoyi-resource
+              uri: lb://ruoyi-resource
+              predicates:
+                - Path=/resource/**
+              filters:
+                - StripPrefix=1
+            # workflow服务
+            - id: ruoyi-workflow
+              uri: lb://ruoyi-workflow
+              predicates:
+                - Path=/workflow/**
+              filters:
+                - StripPrefix=1
+            # warm-flow服务
+            - id: warm-flow
+              uri: lb://ruoyi-workflow
+              predicates:
+                - Path=/warm-flow-ui/**,/warm-flow/**
+            # 演示服务
+            - id: ruoyi-demo
+              uri: lb://ruoyi-demo
+              predicates:
+                - Path=/demo/**
+              filters:
+                - StripPrefix=1
+            # MQ演示服务
+            - id: ruoyi-test-mq
+              uri: lb://ruoyi-test-mq
+              predicates:
+                - Path=/test-mq/**
+              filters:
+                - StripPrefix=1
+            
+            # ====== XYPai 业务模块 ======
+            # XYPai 认证服务
+            - id: xypai-auth
+              uri: lb://xypai-auth
+              predicates:
+                - Path=/xypai-auth/**
+              filters:
+                - StripPrefix=1
+            # XYPai 用户服务
+            - id: xypai-user
+              uri: lb://xypai-user
+              predicates:
+                - Path=/xypai-user/**
+              filters:
+                - StripPrefix=1
+            # XYPai 聊天服务
+            - id: xypai-chat
+              uri: lb://xypai-chat
+              predicates:
+                - Path=/xypai-chat/**
+              filters:
+                - StripPrefix=1
+            # XYPai 内容服务
+            - id: xypai-content
+              uri: lb://xypai-content
+              predicates:
+                - Path=/xypai-content/**
+              filters:
+                - StripPrefix=1
+            # XYPai 交易服务
+            - id: xypai-trade
+              uri: lb://xypai-trade
+              predicates:
+                - Path=/xypai-trade/**
+              filters:
+                - StripPrefix=1

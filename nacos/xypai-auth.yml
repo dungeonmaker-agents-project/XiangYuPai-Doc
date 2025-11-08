@@ -1,0 +1,76 @@
+# XY相遇派认证模块配置
+
+# 数据源配置
+spring:
+  datasource:
+    dynamic:
+      # 设置默认的数据源或者数据源组,默认值即为 master
+      primary: master
+      datasource:
+        # 主库数据源
+        master:
+          type: ${spring.datasource.type}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          # 使用 xypai_auth 数据库（认证相关表：login_session, sms_verification等）
+          url: ${datasource.xypai-auth-master.url}
+          username: ${datasource.xypai-auth-master.username}
+          password: ${datasource.xypai-auth-master.password}
+
+# JWT配置
+auth:
+  jwt:
+    secret: xypai-auth-jwt-secret-key-2025-implementation-64-characters-long
+    # 访问令牌过期时间（秒）- 24小时
+    access-token-validity: 86400
+    # 刷新令牌过期时间（秒）- 7天
+    refresh-token-validity: 604800
+    # JWT签发者
+    issuer: xypai-auth
+
+# Feign配置
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 10000
+        logger-level: basic
+  circuitbreaker:
+    enabled: true
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+
+# Dubbo配置
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://${spring.cloud.nacos.server-addr}
+    group: ${spring.cloud.nacos.discovery.group}
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace}
+
+# SpringDoc API 文档配置
+springdoc:
+  api-docs:
+    enabled: true
+  info:
+    title: 'XY相遇派认证服务API文档'
+    description: 'XY相遇派C端用户认证服务，提供密码登录、短信登录、会话管理、设备管理等功能'
+    version: 'v2.0.0'
+    contact:
+      name: Alice
+      email: alice@xypai.com
+  # 扫描的包路径
+  packages-to-scan: com.xypai.auth.controller
+  # 分组配置
+  group-configs:
+    - group: 认证服务
+      packages-to-scan: com.xypai.auth.controller
+

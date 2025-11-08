@@ -1,0 +1,30 @@
+# XY相遇派用户模块配置
+
+# 数据源配置
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      datasource:
+        # 主库数据源
+        master:
+          type: ${spring.datasource.type}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          # 使用 xypai_user 数据库（用户相关表：user, user_profile, user_stats等）
+          url: ${datasource.xypai-user-master.url}
+          username: ${datasource.xypai-user-master.username}
+          password: ${datasource.xypai-user-master.password}
+
+# Dubbo配置
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://${spring.cloud.nacos.server-addr}
+    group: ${spring.cloud.nacos.discovery.group}
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace}
+

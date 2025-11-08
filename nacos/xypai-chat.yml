@@ -1,0 +1,36 @@
+# XY相遇派聊天模块配置
+
+# 数据源配置
+spring:
+  datasource:
+    dynamic:
+      primary: master
+      datasource:
+        # 主库数据源
+        master:
+          type: ${spring.datasource.type}
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          # 使用 xypai_chat 数据库（聊天相关表：messages, conversations等）
+          url: ${datasource.xypai-chat-master.url}
+          username: ${datasource.xypai-chat-master.username}
+          password: ${datasource.xypai-chat-master.password}
+
+# WebSocket 配置
+websocket:
+  enabled: true
+  path: /ws
+  allowed-origins: "*"
+
+# Dubbo配置
+dubbo:
+  application:
+    name: ${spring.application.name}
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://${spring.cloud.nacos.server-addr}
+    group: ${spring.cloud.nacos.discovery.group}
+    parameters:
+      namespace: ${spring.cloud.nacos.discovery.namespace}
+

@@ -1,0 +1,193 @@
+xypai-content (内容服务模块 - 端口:9402)
+
+📌 详细对接文档：./接口对接前端页面映射.md
+│
+├─📂 发现页面公开接口 (/api/v1/discovery/**)  ✅ 无需登录
+│  │
+│  ├─🔥 获取热门内容
+│  │   └─ GET /api/v1/discovery/hot
+│  │      ├─ 参数: type (内容类型), limit (数量限制)
+│  │      └─ 返回: List<ContentListVO>
+│  │
+│  ├─⭐ 获取推荐内容
+│  │   └─ GET /api/v1/discovery/recommended
+│  │      ├─ 参数: type (内容类型), limit (数量限制)
+│  │      └─ 返回: List<ContentListVO>
+│  │
+│  ├─🏘️ 获取同城内容
+│  │   └─ GET /api/v1/discovery/local
+│  │      ├─ 参数: city (城市名称), type (内容类型), limit (数量)
+│  │      └─ 返回: List<ContentListVO>
+│  │
+│  ├─🔍 搜索内容
+│  │   └─ GET /api/v1/discovery/search
+│  │      ├─ 参数: keyword (搜索关键词), type (内容类型), limit (数量)
+│  │      └─ 返回: List<ContentListVO>
+│  │
+│  ├─📄 获取内容详情
+│  │   └─ GET /api/v1/discovery/{contentId}
+│  │      ├─ 参数: contentId (内容ID)
+│  │      ├─ 功能: 增加浏览数
+│  │      └─ 返回: ContentDetailVO
+│  │
+│  ├─📍 获取附近内容 (基于地理位置) ⭐ 使用空间索引
+│  │   └─ GET /api/v1/discovery/nearby
+│  │      ├─ 参数: longitude (经度), latitude (纬度)
+│  │      │       radius (半径米数), type (内容类型), limit (数量)
+│  │      └─ 返回: List<ContentListVO>
+│  │
+│  ├─🏙️ 获取城市内容
+│  │   └─ GET /api/v1/discovery/city/{cityId}
+│  │      ├─ 参数: cityId (城市ID), type (内容类型), limit (数量)
+│  │      └─ 返回: List<ContentListVO>
+│  │
+│  └─👤 获取用户发布的内容
+│      └─ GET /api/v1/discovery/user/{userId}
+│         ├─ 参数: userId (用户ID), type (内容类型), limit (数量)
+│         └─ 返回: List<ContentListVO>
+│
+├─📂 内容发布管理 (/api/v1/contents/**)  🔒 需要登录
+│  │
+│  ├─✏️ APP-发布内容
+│  │   └─ POST /api/v1/contents/app/publish
+│  │      ├─ 权限: @SaCheckLogin (需要登录)
+│  │      ├─ 请求体: ContentAddDTO
+│  │      └─ 返回: contentId (内容ID)
+│  │
+│  ├─✏️ APP-编辑内容
+│  │   └─ PUT /api/v1/contents/app/{contentId}
+│  │      ├─ 权限: @SaCheckLogin (需要登录，只能编辑自己的)
+│  │      ├─ 请求体: ContentUpdateDTO
+│  │      └─ 返回: R<Void>
+│  │
+│  ├─🗑️ APP-删除内容
+│  │   └─ DELETE /api/v1/contents/app/{contentId}
+│  │      ├─ 权限: @SaCheckLogin (需要登录，只能删除自己的)
+│  │      └─ 返回: R<Void>
+│  │
+│  └─📋 APP-获取我的内容列表
+│      └─ GET /api/v1/contents/app/my
+│         ├─ 权限: @SaCheckLogin (需要登录)
+│         ├─ 参数: type (内容类型), status (内容状态), pageNum, pageSize
+│         └─ 返回: List<ContentListVO>
+│
+├─📂 内容互动操作 (/api/v1/actions/**)  🔒 需要登录
+│  │
+│  ├─👍 点赞/取消点赞
+│  │   └─ POST /api/v1/actions/like
+│  │      ├─ 权限: @SaCheckLogin
+│  │      ├─ 请求体: ContentActionDTO {contentId}
+│  │      └─ 返回: R<Void>
+│  │
+│  ├─⭐ 收藏/取消收藏
+│  │   └─ POST /api/v1/actions/collect
+│  │      ├─ 权限: @SaCheckLogin
+│  │      ├─ 请求体: ContentActionDTO {contentId}
+│  │      └─ 返回: R<Void>
+│  │
+│  ├─📤 分享内容
+│  │   └─ POST /api/v1/actions/share
+│  │      ├─ 权限: @SaCheckLogin
+│  │      ├─ 请求体: ContentActionDTO {contentId}
+│  │      └─ 返回: R<Void>
+│  │
+│  ├─❓ 检查点赞状态
+│  │   └─ GET /api/v1/actions/like/status/{contentId}
+│  │      ├─ 权限: @SaCheckLogin
+│  │      └─ 返回: R<Boolean>
+│  │
+│  ├─❓ 检查收藏状态
+│  │   └─ GET /api/v1/actions/collect/status/{contentId}
+│  │      ├─ 权限: @SaCheckLogin
+│  │      └─ 返回: R<Boolean>
+│  │
+│  ├─📦 批量检查点赞状态
+│  │   └─ POST /api/v1/actions/like/batch-status
+│  │      ├─ 权限: @SaCheckLogin
+│  │      ├─ 请求体: List<Long> contentIds
+│  │      └─ 返回: R<Map<Long, Boolean>>
+│  │
+│  ├─📦 批量检查收藏状态
+│  │   └─ POST /api/v1/actions/collect/batch-status
+│  │      ├─ 权限: @SaCheckLogin
+│  │      ├─ 请求体: List<Long> contentIds
+│  │      └─ 返回: R<Map<Long, Boolean>>
+│  │
+│  ├─📋 获取我的点赞列表
+│  │   └─ GET /api/v1/actions/like/my
+│  │      ├─ 权限: @SaCheckLogin
+│  │      ├─ 参数: pageNum, pageSize
+│  │      └─ 返回: R<List<ContentListVO>>
+│  │
+│  └─📋 获取我的收藏列表
+│      └─ GET /api/v1/actions/collect/my
+│         ├─ 权限: @SaCheckLogin
+│         ├─ 参数: pageNum, pageSize
+│         └─ 返回: R<List<ContentListVO>>
+│
+├─📂 评论管理 (/api/v1/comments/**)
+│  │
+│  ├─✏️ APP-发表评论
+│  │   └─ POST /api/v1/comments/app
+│  │      ├─ 权限: @SaCheckLogin (需要登录)
+│  │      ├─ 请求体: CommentAddDTO
+│  │      └─ 返回: R<Long> commentId
+│  │
+│  ├─🗑️ APP-删除评论
+│  │   └─ DELETE /api/v1/comments/app/{commentId}
+│  │      ├─ 权限: @SaCheckLogin (只能删除自己的)
+│  │      └─ 返回: R<Void>
+│  │
+│  ├─📋 APP-获取评论列表  ✅ 无需登录
+│  │   └─ GET /api/v1/comments/app/content/{contentId}
+│  │      ├─ 参数: contentId, pageNum, pageSize
+│  │      └─ 返回: R<List<CommentVO>>
+│  │
+│  ├─💬 APP-获取评论回复  ✅ 无需登录
+│  │   └─ GET /api/v1/comments/app/{parentId}/replies
+│  │      ├─ 参数: parentId (一级评论ID)
+│  │      └─ 返回: R<List<CommentVO>>
+│  │
+│  ├─👍 APP-评论点赞
+│  │   └─ POST /api/v1/comments/app/{commentId}/like
+│  │      ├─ 权限: @SaCheckLogin (需要登录)
+│  │      └─ 返回: R<Boolean> (true=点赞, false=取消点赞)
+│  │
+│  └─📊 APP-统计评论数  ✅ 无需登录
+│      └─ GET /api/v1/comments/app/count/{contentId}
+│         ├─ 参数: contentId
+│         └─ 返回: R<Long> 评论总数
+│
+└─📂 草稿管理 (/api/v1/drafts/**)  🔒 需要登录
+   │
+   ├─💾 保存草稿 (自动/手动)
+   │   └─ POST /api/v1/drafts/save
+   │      ├─ 权限: @SaCheckPermission("content:draft:add")
+   │      ├─ 请求体: ContentDraftSaveDTO
+   │      └─ 返回: R<Long> draftId
+   │
+   ├─📄 获取草稿详情
+   │   └─ GET /api/v1/drafts/{draftId}
+   │      ├─ 权限: @SaCheckPermission("content:draft:query")
+   │      └─ 返回: R<ContentDraftVO>
+   │
+   ├─📋 获取我的草稿列表
+   │   └─ GET /api/v1/drafts/my
+   │      ├─ 权限: @SaCheckPermission("content:draft:query")
+   │      ├─ 参数: limit (数量限制)
+   │      └─ 返回: R<List<ContentDraftVO>>
+   │
+   ├─🗑️ 删除草稿
+   │   └─ DELETE /api/v1/drafts/{draftId}
+   │      ├─ 权限: @SaCheckPermission("content:draft:remove")
+   │      └─ 返回: R<Void>
+   │
+   ├─📤 发布草稿
+   │   └─ POST /api/v1/drafts/{draftId}/publish
+   │      ├─ 权限: @SaCheckPermission("content:draft:publish")
+   │      └─ 返回: R<Long> contentId (发布后的内容ID)
+   │
+   └─📊 统计草稿数量
+       └─ GET /api/v1/drafts/count
+          ├─ 权限: @SaCheckPermission("content:draft:query")
+          └─ 返回: R<Long> 草稿总数
