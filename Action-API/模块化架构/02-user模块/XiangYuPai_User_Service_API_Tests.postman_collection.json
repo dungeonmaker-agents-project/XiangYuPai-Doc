@@ -1,0 +1,750 @@
+{
+  "info": {
+    "name": "XiangYuPai User Service API Tests",
+    "description": "Complete API test collection for User Service module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "xypai-user-service-001",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:9401",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "skill_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "other_user_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01-Profile Management",
+      "item": [
+        {
+          "name": "Get Profile Header",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response has user data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.code).to.eql(200);",
+                  "    pm.expect(jsonData.data).to.have.property('userId');",
+                  "    pm.expect(jsonData.data).to.have.property('nickname');",
+                  "    pm.expect(jsonData.data).to.have.property('avatar');",
+                  "    pm.expect(jsonData.data.stats).to.have.property('followingCount');",
+                  "    pm.expect(jsonData.data.stats).to.have.property('fansCount');",
+                  "    pm.expect(jsonData.data.stats).to.have.property('likesCount');",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is acceptable\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/profile/header",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile", "header"]
+            },
+            "description": "Get user profile header information including avatar, nickname, and stats"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Profile Edit Data",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains profile data\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('userId');",
+                  "    pm.expect(jsonData.data).to.have.property('nickname');",
+                  "    pm.expect(jsonData.data).to.have.property('avatar');",
+                  "    ",
+                  "    // Save userId for other requests",
+                  "    pm.collectionVariables.set(\"user_id\", jsonData.data.userId);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/profile/edit",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile", "edit"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Nickname",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Update successful\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.code).to.eql(200);",
+                  "    pm.expect(jsonData.message).to.include(\"成功\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nickname\": \"测试昵称更新\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/profile/nickname",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile", "nickname"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Gender",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"gender\": \"male\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/profile/gender",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile", "gender"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Birthday",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"birthday\": \"1995-06-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/profile/birthday",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile", "birthday"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Height",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"height\": 175\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/profile/height",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "profile", "height"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02-Skill Management",
+      "item": [
+        {
+          "name": "Get Skill Config",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Config contains games and serviceTypes\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('games');",
+                  "    pm.expect(jsonData.data).to.have.property('serviceTypes');",
+                  "    pm.expect(jsonData.data.games).to.be.an('array');",
+                  "    pm.expect(jsonData.data.serviceTypes).to.be.an('array');",
+                  "});",
+                  "",
+                  "pm.test(\"Games have correct structure\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var game = jsonData.data.games[0];",
+                  "    pm.expect(game).to.have.property('gameId');",
+                  "    pm.expect(game).to.have.property('gameName');",
+                  "    pm.expect(game).to.have.property('ranks');",
+                  "    pm.expect(game.ranks).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/skills/config",
+              "host": ["{{base_url}}"],
+              "path": ["api", "skills", "config"]
+            },
+            "description": "Get skill configuration including games list and service types"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Skills",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains skills array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('skills');",
+                  "    pm.expect(jsonData.data.skills).to.be.an('array');",
+                  "    ",
+                  "    // Save first skill ID if exists",
+                  "    if (jsonData.data.skills.length > 0) {",
+                  "        pm.collectionVariables.set(\"skill_id\", jsonData.data.skills[0].skillId);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/my?page=1&pageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "my"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Online Skill",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Returns skillId\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.be.a('number');",
+                  "    pm.collectionVariables.set(\"skill_id\", jsonData.data);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coverImage\": \"https://cdn.example.com/skill-cover.jpg\",\n  \"gameName\": \"王者荣耀\",\n  \"gameRank\": \"王者\",\n  \"skillName\": \"王者荣耀上分带练\",\n  \"description\": \"提供王者荣耀上分服务，拥有多年游戏经验，擅长打野和中单位置，可带新手快速上分，耐心指导游戏技巧。\",\n  \"price\": 99.00,\n  \"serviceHours\": 1.5,\n  \"images\": [\n    \"https://cdn.example.com/skill-img1.jpg\",\n    \"https://cdn.example.com/skill-img2.jpg\"\n  ],\n  \"promises\": [\"准时开始\", \"耐心指导\", \"友好交流\"],\n  \"isOnline\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/online",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "online"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Offline Skill",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Returns skillId\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"coverImage\": \"https://cdn.example.com/cleaning-cover.jpg\",\n  \"serviceType\": \"cleaning\",\n  \"skillName\": \"专业家庭清洁服务\",\n  \"description\": \"提供专业家庭清洁服务，包括日常保洁、深度清洁、开荒保洁等，经验丰富，工具齐全，服务周到。\",\n  \"price\": 80.00,\n  \"location\": {\n    \"address\": \"广东省广州市天河区珠江新城\",\n    \"latitude\": 23.1200,\n    \"longitude\": 113.3240\n  },\n  \"availableTimes\": [\n    {\"dayOfWeek\": 1, \"startTime\": \"09:00\", \"endTime\": \"18:00\"},\n    {\"dayOfWeek\": 2, \"startTime\": \"09:00\", \"endTime\": \"18:00\"},\n    {\"dayOfWeek\": 3, \"startTime\": \"09:00\", \"endTime\": \"18:00\"},\n    {\"dayOfWeek\": 4, \"startTime\": \"09:00\", \"endTime\": \"18:00\"},\n    {\"dayOfWeek\": 5, \"startTime\": \"09:00\", \"endTime\": \"18:00\"}\n  ],\n  \"images\": [\n    \"https://cdn.example.com/cleaning-img1.jpg\"\n  ],\n  \"promises\": [\"上门服务\", \"工具齐全\", \"专业可靠\"],\n  \"isOnline\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/offline",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "offline"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Skill Detail",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains skill details\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('skillId');",
+                  "    pm.expect(jsonData.data).to.have.property('skillName');",
+                  "    pm.expect(jsonData.data).to.have.property('skillType');",
+                  "    pm.expect(jsonData.data).to.have.property('price');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/{{skill_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "{{skill_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Skill Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Returns updated status\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('isOnline');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isOnline\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/{{skill_id}}/toggle",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "{{skill_id}}", "toggle"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Skill",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/{{skill_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "{{skill_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03-User Relations",
+      "item": [
+        {
+          "name": "Get Fans List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains fans array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('fans');",
+                  "    pm.expect(jsonData.data.fans).to.be.an('array');",
+                  "    pm.expect(jsonData.data).to.have.property('total');",
+                  "    pm.expect(jsonData.data).to.have.property('hasMore');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/relation/fans?page=1&pageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "relation", "fans"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Following List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains following array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('total');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/relation/following?page=1&pageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "relation", "following"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Follow User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Follow successful\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.code).to.eql(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/relation/follow/{{other_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "relation", "follow", "{{other_user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unfollow User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/relation/follow/{{other_user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "relation", "follow", "{{other_user_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Fans",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/relation/fans?keyword=测试&page=1&pageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "relation", "fans"],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "测试"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04-Nearby Skills",
+      "item": [
+        {
+          "name": "Search Nearby Skills",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response contains skills\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.be.an('object');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/user/skills/nearby?latitude=23.1200&longitude=113.3240&radiusMeters=10000&page=1&pageSize=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "user", "skills", "nearby"],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "23.1200",
+                  "description": "Latitude"
+                },
+                {
+                  "key": "longitude",
+                  "value": "113.3240",
+                  "description": "Longitude"
+                },
+                {
+                  "key": "radiusMeters",
+                  "value": "10000",
+                  "description": "Radius in meters"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

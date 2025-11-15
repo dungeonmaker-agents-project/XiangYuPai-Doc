@@ -8,6 +8,12 @@
 		},
 		{
 			"path": "../RuoYi-Cloud-Plus"
+		},
+		{
+			"path": "../XiangYuPai-Admin"
+		},
+		{
+			"path": "../RuoYi-Cloud-Plus-2.X"
 		}
 	],
 	"settings": {}

@@ -1,0 +1,1201 @@
+﻿---
+alwaysApply: true
+---
+
+# RuoYi-Cloud-Plus Microservice Architecture (Compact)
+
+Generated: 2025-11-11 16:48:34
+Depth: 10 (default) | Purpose: Complete project overview for AI
+
+**Note:** This tree shows ALL directories/folders. Java files are listed ONLY in controller/, impl/, and o/ directories to show implemented features.
+
+## Architecture Overview
+
+**Core Framework:**
+- ruoyi-api - API definitions & remote service interfaces
+- ruoyi-auth - Authentication service (login, token, captcha)
+- ruoyi-common - 30+ shared modules (redis, mybatis, satoken, web, etc.)
+- ruoyi-gateway - API Gateway (routing, filters, auth)
+- ruoyi-modules - Business modules (system, gen, job, resource, workflow)
+- ruoyi-visual - Monitoring (nacos, seata, snailjob, monitor)
+
+**Custom Business:**
+- xypai-chat - Chat/messaging service (WebSocket, conversations)
+- xypai-content - Content management (articles, media, comments)
+- xypai-security - OAuth2 authentication (SMS login, devices, sessions)
+- xypai-trade - Trade/payment (orders, wallet, reviews)
+- xypai-user - User management (profiles, relations, stats)
+
+**Infrastructure:**
+- script - SQL scripts, Docker configs, Nacos configs
+- dev_workspace - Team workspaces, deployment docs
+
+## ruoyi-api
+
+```
+ruoyi-api\
+|-- ruoyi-api-workflow\
+|   +-- src\
+|       +-- main\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- workflow\
+|                           +-- api\
+|                               |-- event\
+|                               +-- domain\
+|-- ruoyi-api-system\
+|   +-- src\
+|       +-- main\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- system\
+|                           +-- api\
+|                               |-- model\
+|                               +-- domain\
+|                                   |-- vo\
+|                                   |   |-- RemoteUserVo.java
+|                                   |   |-- RemoteTenantVo.java
+|                                   |   |-- RemoteTaskAssigneeVo.java
+|                                   |   |-- RemoteSocialVo.java
+|                                   |   |-- RemoteDictTypeVo.java
+|                                   |   |-- RemoteDictDataVo.java
+|                                   |   |-- RemoteDeptVo.java
+|                                   |   +-- RemoteClientVo.java
+|                                   +-- bo\
+|-- ruoyi-api-resource\
+|   +-- src\
+|       +-- main\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- resource\
+|                           +-- api\
+|                               +-- domain\
++-- ruoyi-api-bom\
+```
+
+## ruoyi-auth
+
+```
+ruoyi-auth\
++-- src\
+    |-- test\
+    |   |-- resources\
+    |   +-- java\
+    |       +-- com\
+    |           +-- xypai\
+    |               +-- auth\
+    |                   |-- utils\
+    |                   +-- test\
+    +-- main\
+        |-- resources\
+        +-- java\
+            +-- org\
+                +-- dromara\
+                    +-- auth\
+                        |-- service\
+                        |   +-- impl\
+                        |       |-- XcxAuthStrategy.java
+                        |       |-- SocialAuthStrategy.java
+                        |       |-- SmsAuthStrategy.java
+                        |       |-- PasswordAuthStrategy.java
+                        |       +-- EmailAuthStrategy.java
+                        |-- properties\
+                        |-- listener\
+                        |-- form\
+                        |-- enums\
+                        |-- domain\
+                        |   |-- vo\
+                        |   |   |-- TenantListVo.java
+                        |   |   |-- LoginVo.java
+                        |   |   |-- LoginTenantVo.java
+                        |   |   +-- CaptchaVo.java
+                        |   +-- convert\
+                        |-- controller\
+                        |   |-- TokenController.java
+                        |   |-- SmsController.java
+                        |   +-- CaptchaController.java
+                        +-- config\
+```
+
+## ruoyi-common
+
+```
+ruoyi-common\
+|-- ruoyi-common-websocket\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- websocket\
+|                               |-- utils\
+|                               |-- listener\
+|                               |-- interceptor\
+|                               |-- holder\
+|                               |-- handler\
+|                               |-- dto\
+|                               |-- constant\
+|                               +-- config\
+|                                   +-- properties\
+|-- ruoyi-common-web\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- web\
+|                               |-- handler\
+|                               |-- filter\
+|                               |-- core\
+|                               +-- config\
+|                                   +-- properties\
+|-- ruoyi-common-translation\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- translation\
+|                               |-- core\
+|                               |   |-- impl\
+|                               |   |   |-- UserNameTranslationImpl.java
+|                               |   |   |-- OssUrlTranslationImpl.java
+|                               |   |   |-- NicknameTranslationImpl.java
+|                               |   |   |-- DictTypeTranslationImpl.java
+|                               |   |   +-- DeptNameTranslationImpl.java
+|                               |   +-- handler\
+|                               |-- constant\
+|                               |-- config\
+|                               +-- annotation\
+|-- ruoyi-common-tenant\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- tenant\
+|                               |-- properties\
+|                               |-- manager\
+|                               |-- helper\
+|                               |-- handle\
+|                               |-- exception\
+|                               |-- core\
+|                               +-- config\
+|-- ruoyi-common-sse\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- sse\
+|                               |-- utils\
+|                               |-- listener\
+|                               |-- dto\
+|                               |-- core\
+|                               |-- controller\
+|                               |   +-- SseController.java
+|                               +-- config\
+|-- ruoyi-common-social\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               |-- org\
+|               |   +-- dromara\
+|               |       +-- common\
+|               |           +-- social\
+|               |               |-- utils\
+|               |               |-- topiam\
+|               |               |-- maxkey\
+|               |               |-- gitea\
+|               |               +-- config\
+|               |                   +-- properties\
+|               +-- me\
+|                   +-- zhyd\
+|                       +-- oauth\
+|                           +-- request\
+|-- ruoyi-common-sms\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- sms\
+|                               |-- handler\
+|                               |-- core\
+|                               |   +-- dao\
+|                               +-- config\
+|-- ruoyi-common-skylog\
+|   +-- src\
+|       +-- main\
+|           +-- resources\
+|-- ruoyi-common-service-impl\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- core\
+|                               |-- utils\
+|                               +-- service\
+|                                   +-- impl\
+|                                       |-- PermissionServiceImpl.java
+|                                       +-- DictServiceImpl.java
+|-- ruoyi-common-sensitive\
+|   +-- src\
+|       +-- main\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- sensitive\
+|                               |-- handler\
+|                               |-- core\
+|                               +-- annotation\
+|-- ruoyi-common-security\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- security\
+|                               +-- config\
+|-- ruoyi-common-seata\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               |-- org\
+|               |   +-- dromara\
+|               |       +-- common\
+|               |           +-- seata\
+|               |               +-- config\
+|               +-- com\
+|                   +-- alibaba\
+|                       +-- cloud\
+|                           +-- seata\
+|                               |-- web\
+|                               +-- rest\
+|-- ruoyi-common-satoken\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- satoken\
+|                               |-- utils\
+|                               |-- handler\
+|                               |-- core\
+|                               |   |-- service\
+|                               |   +-- dao\
+|                               +-- config\
+|-- ruoyi-common-redis\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- redis\
+|                               |-- utils\
+|                               |-- manager\
+|                               |-- handler\
+|                               +-- config\
+|                                   +-- properties\
+|-- ruoyi-common-ratelimiter\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- ratelimiter\
+|                               |-- enums\
+|                               |-- config\
+|                               |-- aspectj\
+|                               +-- annotation\
+|-- ruoyi-common-prometheus\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- prometheus\
+|                               +-- config\
+|-- ruoyi-common-oss\
+|   +-- src\
+|       +-- main\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- oss\
+|                               |-- properties\
+|                               |-- factory\
+|                               |-- exception\
+|                               |-- enums\
+|                               |-- entity\
+|                               |-- core\
+|                               +-- constant\
+|-- ruoyi-common-nacos\
+|-- ruoyi-common-mybatis\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       |-- spring\
+|           |       +-- dubbo\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- mybatis\
+|                               |-- service\
+|                               |-- interceptor\
+|                               |-- helper\
+|                               |-- handler\
+|                               |-- filter\
+|                               |-- enums\
+|                               |-- core\
+|                               |   |-- page\
+|                               |   |-- mapper\
+|                               |   +-- domain\
+|                               |-- config\
+|                               |-- aspect\
+|                               +-- annotation\
+|-- ruoyi-common-mail\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- mail\
+|                               |-- utils\
+|                               +-- config\
+|                                   +-- properties\
+|-- ruoyi-common-logstash\
+|   +-- src\
+|       +-- main\
+|           +-- resources\
+|-- ruoyi-common-log\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- log\
+|                               |-- event\
+|                               |-- enums\
+|                               |-- aspect\
+|                               +-- annotation\
+|-- ruoyi-common-loadbalancer\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       |-- spring\
+|           |       +-- dubbo\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- loadbalance\
+|                               |-- core\
+|                               +-- config\
+|-- ruoyi-common-json\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- json\
+|                               |-- validate\
+|                               |-- utils\
+|                               |-- handler\
+|                               +-- config\
+|-- ruoyi-common-job\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- job\
+|                               +-- config\
+|                                   +-- properties\
+|-- ruoyi-common-idempotent\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- idempotent\
+|                               |-- config\
+|                               |-- aspectj\
+|                               +-- annotation\
+|-- ruoyi-common-excel\
+|   +-- src\
+|       +-- main\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- excel\
+|                               |-- utils\
+|                               |-- handler\
+|                               |-- core\
+|                               |-- convert\
+|                               +-- annotation\
+|-- ruoyi-common-encrypt\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- encrypt\
+|                               |-- utils\
+|                               |-- properties\
+|                               |-- interceptor\
+|                               |-- filter\
+|                               |-- enumd\
+|                               |-- core\
+|                               |   +-- encryptor\
+|                               |-- config\
+|                               +-- annotation\
+|-- ruoyi-common-elasticsearch\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       |-- easyes\
+|                       |   |-- starter\
+|                       |   |   +-- config\
+|                       |   +-- spring\
+|                       |       +-- config\
+|                       +-- common\
+|                           +-- elasticsearch\
+|                               +-- config\
+|-- ruoyi-common-dubbo\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       |-- spring\
+|           |       +-- dubbo\
+|           +-- java\
+|               +-- org\
+|                   |-- dromara\
+|                   |   +-- common\
+|                   |       +-- dubbo\
+|                   |           |-- properties\
+|                   |           |-- handler\
+|                   |           |-- filter\
+|                   |           |-- enumd\
+|                   |           +-- config\
+|                   +-- apache\
+|                       +-- dubbo\
+|                           +-- metadata\
+|-- ruoyi-common-doc\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- doc\
+|                               |-- handler\
+|                               +-- config\
+|                                   +-- properties\
+|-- ruoyi-common-core\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   |-- META-INF\
+|           |   |   +-- spring\
+|           |   +-- i18n\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- core\
+|                               |-- xss\
+|                               |-- validate\
+|                               |   |-- enumd\
+|                               |   +-- dicts\
+|                               |-- utils\
+|                               |   |-- sql\
+|                               |   |-- regex\
+|                               |   |-- reflect\
+|                               |   |-- ip\
+|                               |   +-- file\
+|                               |-- service\
+|                               |-- factory\
+|                               |-- exception\
+|                               |   |-- user\
+|                               |   |-- file\
+|                               |   +-- base\
+|                               |-- enums\
+|                               |-- domain\
+|                               |   +-- model\
+|                               |-- constant\
+|                               +-- config\
+|-- ruoyi-common-bus\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- META-INF\
+|           |       +-- spring\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- common\
+|                           +-- bus\
+|                               +-- config\
+|-- ruoyi-common-bom\
++-- ruoyi-common-alibaba-bom\
+```
+
+## ruoyi-example
+
+```
+ruoyi-example\
+|-- ruoyi-test-mq\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- stream\
+|                           |-- producer\
+|                           |-- listener\
+|                           |-- controller\
+|                           |   +-- PushMessageController.java
+|                           |-- consumer\
+|                           |-- config\
+|                           +-- callback\
++-- ruoyi-demo\
+    +-- src\
+        |-- test\
+        |   +-- java\
+        |       +-- org\
+        |           +-- dromara\
+        |               +-- demo\
+        +-- main\
+            |-- resources\
+            |   |-- mapper\
+            |   |   +-- demo\
+            |   +-- excel\
+            +-- java\
+                +-- org\
+                    +-- dromara\
+                        +-- demo\
+                            |-- service\
+                            |   +-- impl\
+                            |       |-- TestTreeServiceImpl.java
+                            |       |-- TestDemoServiceImpl.java
+                            |       |-- SensitiveServiceImpl.java
+                            |       |-- package-info.java
+                            |       +-- ExportExcelServiceImpl.java
+                            |-- mapper\
+                            |-- listener\
+                            |-- esmapper\
+                            |-- domain\
+                            |   |-- vo\
+                            |   |   |-- TestTreeVo.java
+                            |   |   |-- TestDemoVo.java
+                            |   |   +-- ExportDemoVo.java
+                            |   +-- bo\
+                            +-- controller\
+                                |-- TestTreeController.java
+                                |-- TestShardingController.java
+                                |-- TestSensitiveController.java
+                                |-- TestI18nController.java
+                                |-- TestExcelController.java
+                                |-- TestEncryptController.java
+                                |-- TestDemoController.java
+                                |-- TestBusController.java
+                                |-- TestBatchController.java
+                                |-- Swagger3DemoController.java
+                                |-- SmsController.java
+                                |-- RedisPubSubController.java
+                                |-- RedisLockController.java
+                                |-- RedisCacheController.java
+                                |-- package-info.java
+                                |-- MailSendController.java
+                                +-- EsCrudController.java
+```
+
+## ruoyi-gateway
+
+```
+ruoyi-gateway\
++-- src\
+    +-- main\
+        |-- resources\
+        +-- java\
+            +-- org\
+                |-- springframework\
+                |   +-- cloud\
+                |       +-- gateway\
+                |           +-- filter\
+                |               +-- factory\
+                +-- dromara\
+                    +-- gateway\
+                        |-- utils\
+                        |-- handler\
+                        |-- filter\
+                        +-- config\
+                            +-- properties\
+```
+
+## ruoyi-modules
+
+```
+ruoyi-modules\
+|-- ruoyi-workflow\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- mapper\
+|           |       +-- workflow\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- workflow\
+|                           |-- service\
+|                           |   +-- impl\
+|                           |       |-- WorkflowServiceImpl.java
+|                           |       |-- TestLeaveServiceImpl.java
+|                           |       |-- FlwTaskServiceImpl.java
+|                           |       |-- FlwTaskAssigneeServiceImpl.java
+|                           |       |-- FlwSpelServiceImpl.java
+|                           |       |-- FlwNodeExtServiceImpl.java
+|                           |       |-- FlwInstanceServiceImpl.java
+|                           |       |-- FlwDefinitionServiceImpl.java
+|                           |       |-- FlwCommonServiceImpl.java
+|                           |       |-- FlwChartExtServiceImpl.java
+|                           |       |-- FlwCategoryServiceImpl.java
+|                           |       +-- CategoryNameTranslationImpl.java
+|                           |-- rule\
+|                           |-- mapper\
+|                           |-- listener\
+|                           |-- handler\
+|                           |-- dubbo\
+|                           |-- domain\
+|                           |   |-- vo\
+|                           |   |   |-- TestLeaveVo.java
+|                           |   |   |-- NodeExtVo.java
+|                           |   |   |-- FlowTaskVo.java
+|                           |   |   |-- FlowSpelVo.java
+|                           |   |   |-- FlowInstanceVo.java
+|                           |   |   |-- FlowHisTaskVo.java
+|                           |   |   |-- FlowDefinitionVo.java
+|                           |   |   |-- FlowCopyVo.java
+|                           |   |   |-- FlowCategoryVo.java
+|                           |   |   +-- ButtonPermissionVo.java
+|                           |   +-- bo\
+|                           |-- controller\
+|                           |   |-- TestLeaveController.java
+|                           |   |-- FlwTaskController.java
+|                           |   |-- FlwSpelController.java
+|                           |   |-- FlwInstanceController.java
+|                           |   |-- FlwDefinitionController.java
+|                           |   +-- FlwCategoryController.java
+|                           |-- config\
+|                           +-- common\
+|                               |-- enums\
+|                               +-- constant\
+|-- ruoyi-system\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- mapper\
+|           |       +-- system\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- system\
+|                           |-- service\
+|                           |   +-- impl\
+|                           |       |-- SysUserServiceImpl.java
+|                           |       |-- SysTenantServiceImpl.java
+|                           |       |-- SysTenantPackageServiceImpl.java
+|                           |       |-- SysSocialServiceImpl.java
+|                           |       |-- SysSensitiveServiceImpl.java
+|                           |       |-- SysRoleServiceImpl.java
+|                           |       |-- SysPostServiceImpl.java
+|                           |       |-- SysPermissionServiceImpl.java
+|                           |       |-- SysOperLogServiceImpl.java
+|                           |       |-- SysNoticeServiceImpl.java
+|                           |       |-- SysMenuServiceImpl.java
+|                           |       |-- SysLogininforServiceImpl.java
+|                           |       |-- SysDictTypeServiceImpl.java
+|                           |       |-- SysDictDataServiceImpl.java
+|                           |       |-- SysDeptServiceImpl.java
+|                           |       |-- SysConfigServiceImpl.java
+|                           |       +-- SysClientServiceImpl.java
+|                           |-- mapper\
+|                           |-- listener\
+|                           |-- dubbo\
+|                           |-- domain\
+|                           |   |-- vo\
+|                           |   |   |-- UserInfoVo.java
+|                           |   |   |-- SysUserVo.java
+|                           |   |   |-- SysUserInfoVo.java
+|                           |   |   |-- SysUserImportVo.java
+|                           |   |   |-- SysUserExportVo.java
+|                           |   |   |-- SysTenantVo.java
+|                           |   |   |-- SysTenantPackageVo.java
+|                           |   |   |-- SysSocialVo.java
+|                           |   |   |-- SysRoleVo.java
+|                           |   |   |-- SysPostVo.java
+|                           |   |   |-- SysOperLogVo.java
+|                           |   |   |-- SysNoticeVo.java
+|                           |   |   |-- SysMenuVo.java
+|                           |   |   |-- SysLogininforVo.java
+|                           |   |   |-- SysDictTypeVo.java
+|                           |   |   |-- SysDictDataVo.java
+|                           |   |   |-- SysDeptVo.java
+|                           |   |   |-- SysConfigVo.java
+|                           |   |   |-- SysClientVo.java
+|                           |   |   |-- RouterVo.java
+|                           |   |   |-- ProfileUserVo.java
+|                           |   |   +-- MetaVo.java
+|                           |   |-- convert\
+|                           |   +-- bo\
+|                           +-- controller\
+|                               |-- system\
+|                               +-- monitor\
+|-- ruoyi-resource\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- mapper\
+|           |       +-- resource\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- resource\
+|                           |-- service\
+|                           |   +-- impl\
+|                           |       |-- SysOssServiceImpl.java
+|                           |       +-- SysOssConfigServiceImpl.java
+|                           |-- runner\
+|                           |-- mapper\
+|                           |-- dubbo\
+|                           |-- domain\
+|                           |   |-- vo\
+|                           |   |   |-- SysOssVo.java
+|                           |   |   |-- SysOssUploadVo.java
+|                           |   |   +-- SysOssConfigVo.java
+|                           |   |-- convert\
+|                           |   +-- bo\
+|                           +-- controller\
+|                               |-- SysSmsController.java
+|                               |-- SysOssController.java
+|                               |-- SysOssConfigController.java
+|                               +-- SysEmailController.java
+|-- ruoyi-job\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           +-- java\
+|               +-- org\
+|                   +-- dromara\
+|                       +-- job\
+|                           |-- snailjob\
+|                           +-- entity\
++-- ruoyi-gen\
+    +-- src\
+        +-- main\
+            |-- resources\
+            |   |-- vm\
+            |   |   |-- xml\
+            |   |   |-- vue\
+            |   |   |-- ts\
+            |   |   |-- sql\
+            |   |   |   |-- postgres\
+            |   |   |   +-- oracle\
+            |   |   +-- java\
+            |   +-- mapper\
+            |       +-- generator\
+            +-- java\
+                +-- org\
+                    +-- dromara\
+                        +-- gen\
+                            |-- util\
+                            |-- service\
+                            |-- mapper\
+                            |-- domain\
+                            |-- controller\
+                            |   +-- GenController.java
+                            |-- constant\
+                            +-- config\
+```
+
+## ruoyi-visual
+
+```
+ruoyi-visual\
+|-- ruoyi-snailjob-server\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           +-- java\
+|               |-- org\
+|               |   +-- dromara\
+|               |       +-- snailjob\
+|               +-- com\
+|                   +-- aizuda\
+|                       +-- snailjob\
+|                           +-- server\
+|                               |-- starter\
+|                               |   +-- config\
+|                               +-- common\
+|                                   +-- register\
+|-- ruoyi-seata-server\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- lib\
+|           +-- java\
+|               +-- org\
+|                   +-- apache\
+|                       +-- seata\
+|                           |-- server\
+|                           +-- core\
+|-- ruoyi-nacos\
+|   +-- src\
+|       +-- main\
+|           |-- resources\
+|           |   +-- lib\
+|           +-- java\
+|               +-- com\
+|                   +-- alibaba\
+|                       +-- nacos\
+|                           +-- config\
++-- ruoyi-monitor\
+    +-- src\
+        +-- main\
+            |-- resources\
+            +-- java\
+                +-- org\
+                    +-- dromara\
+                        +-- modules\
+                            +-- monitor\
+                                |-- notifier\
+                                |-- controller\
+                                |   +-- PrometheusController.java
+                                +-- config\
+```
+
+## xypai-chat
+
+```
+xypai-chat\
+|-- src\
+|   +-- main\
+|       |-- resources\
+|       |   +-- mapper\
+|       +-- java\
+|           +-- com\
+|               +-- xypai\
+|                   +-- chat\
+|                       |-- websocket\
+|                       |-- utils\
+|                       |-- task\
+|                       |-- service\
+|                       |   +-- impl\
+|                       |       |-- MessageSettingsServiceImpl.java
+|                       |       |-- MessageReadReceiptServiceImpl.java
+|                       |       |-- ChatMessageServiceImpl.java
+|                       |       +-- ChatConversationServiceImpl.java
+|                       |-- mapper\
+|                       |-- exception\
+|                       |-- domain\
+|                       |   |-- vo\
+|                       |   |   |-- MessageVO.java
+|                       |   |   |-- MessageSettingsVO.java
+|                       |   |   |-- ConversationListVO.java
+|                       |   |   +-- ConversationDetailVO.java
+|                       |   |-- entity\
+|                       |   +-- dto\
+|                       |-- controller\
+|                       |   +-- app\
+|                       |-- constant\
+|                       +-- config\
++-- eve_workspace\
+    |-- sql\
+    |-- docs\
+    +-- docker\
+        |-- redis\
+        +-- mysql\
+```
+
+## xypai-content
+
+```
+xypai-content\
++-- src\
+    +-- main\
+        |-- resources\
+        |   +-- mapper\
+        +-- java\
+            +-- com\
+                +-- xypai\
+                    +-- content\
+                        |-- service\
+                        |   +-- impl\
+                        |       |-- ContentStatsServiceImpl.java
+                        |       |-- ContentServiceImpl.java
+                        |       |-- ContentDraftServiceImpl.java
+                        |       |-- ContentActionServiceImpl.java
+                        |       +-- CommentServiceImpl.java
+                        |-- mapper\
+                        |-- handler\
+                        |-- domain\
+                        |   |-- vo\
+                        |   |   |-- ContentListVO.java
+                        |   |   |-- ContentDraftVO.java
+                        |   |   |-- ContentDetailVO.java
+                        |   |   |-- ContentActionVO.java
+                        |   |   +-- CommentVO.java
+                        |   |-- entity\
+                        |   +-- dto\
+                        |-- controller\
+                        |   +-- app\
+                        |       +-- public_\
+                        +-- config\
+```
+
+## xypai-trade
+
+```
+xypai-trade\
+|-- src\
+|   +-- main\
+|       |-- resources\
+|       |   +-- mapper\
+|       +-- java\
+|           +-- com\
+|               +-- xypai\
+|                   +-- trade\
+|                       |-- service\
+|                       |   +-- impl\
+|                       |       |-- WalletServiceImpl.java
+|                       |       |-- ReviewServiceImpl.java
+|                       |       |-- PaymentServiceImpl.java
+|                       |       +-- OrderServiceImpl.java
+|                       |-- mapper\
+|                       |-- domain\
+|                       |   |-- vo\
+|                       |   |   |-- ReviewListVO.java
+|                       |   |   |-- ReviewDetailVO.java
+|                       |   |   |-- PaymentResultVO.java
+|                       |   |   |-- OrderListVO.java
+|                       |   |   +-- OrderDetailVO.java
+|                       |   |-- entity\
+|                       |   +-- dto\
+|                       |-- controller\
+|                       |   +-- app\
+|                       +-- config\
++-- sql\
+```
+
+## xypai-user
+
+```
+xypai-user\
+|-- src\
+|   |-- test\
+|   |   +-- resources\
+|   +-- main\
+|       |-- resources\
+|       |   +-- mapper\
+|       +-- java\
+|           +-- com\
+|               +-- xypai\
+|                   +-- user\
+|                       |-- service\
+|                       |   +-- impl\
+|                       |       +-- UserServiceImpl.java
+|                       |-- mapper\
+|                       |-- domain\
+|                       |   |-- vo\
+|                       |   |   |-- UserVO.java
+|                       |   |   +-- UserSimpleVO.java
+|                       |   |-- entity\
+|                       |   +-- dto\
+|                       +-- controller\
+|                           +-- app\
++-- sql\
+```
+
+## script
+
+```
+script\
+|-- sql\
+|   |-- Xuser\
+|   |   +-- sql\
+|   |-- Xtrade\
+|   |   +-- sql\
+|   |-- Xcontent\
+|   |   +-- sql\
+|   |-- Xchat\
+|   |   +-- sql\
+|   |-- Xauth\
+|   |   |-- sql\
+|   |   |   +-- test-data\
+|   |   |-- examples\
+|   |   +-- docs\
+|   |       +-- test-data\
+|   |-- update\
+|   |   |-- postgres\
+|   |   +-- oracle\
+|   |-- postgres\
+|   +-- oracle\
+|-- leave\
+|-- docker\
+|   |-- skywalking\
+|   |   +-- agent\
+|   |       |-- plugins\
+|   |       |-- optional-plugins\
+|   |       |-- licenses\
+|   |       |-- config\
+|   |       |-- bootstrap-plugins\
+|   |       +-- activations\
+|   |-- shardingproxy\
+|   |   |-- ext-lib\
+|   |   +-- conf\
+|   |-- rocketmq\
+|   |   |-- namesrv\
+|   |   +-- broker1\
+|   |       +-- conf\
+|   |-- redis\
+|   |   +-- conf\
+|   |-- rabbitmq\
+|   |   +-- log\
+|   |-- prometheus\
+|   |-- nginx\
+|   |   +-- conf\
+|   |-- nacos\
+|   |   +-- conf\
+|   |-- mysql\
+|   |   +-- conf\
+|   |-- minio\
+|   |   +-- config\
+|   |       +-- certs\
+|   |           +-- CAs\
+|   |-- kafka\
+|   |-- grafana\
+|   +-- elk\
+|       |-- logstash\
+|       |   |-- pipeline\
+|       |   +-- config\
+|       |-- kibana\
+|       |   +-- config\
+|       +-- elasticsearch\
+|           +-- plugins\
+|               +-- elasticsearch-analysis-ik-7.17.6\
+|                   +-- config\
++-- config\
+    |-- nacos\
+    +-- grafana\
+```
+
+## Root Files
+
+- LICENSE
+- pom.xml
+- README.md
+
+---
+
+**Note:** This is a complete directory tree (depth 10) showing ALL folders. 
+Java files (.java) are listed in controller/, impl/, and o/ directories to show what features are implemented.
+

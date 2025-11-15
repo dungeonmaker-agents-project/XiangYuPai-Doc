@@ -1,0 +1,258 @@
+﻿---
+alwaysApply: true
+---
+
+# XiangYuPai Admin - Vue3 Frontend Architecture (Compact)
+
+Generated: 2025-11-11 16:56:52
+Depth: 10 | Purpose: Complete frontend project overview for AI
+
+**Note:** This tree shows ALL directories/folders. TypeScript/Vue files are listed in key directories (pi/, iews/, store/, 
+outer/, 	ypes/, utils/, hooks/) to show implemented features.
+
+## Architecture Overview
+
+**Tech Stack:**
+- Vue 3.5.13 + TypeScript 5.8.3
+- Element Plus 2.9.8 (UI Components)
+- Pinia 3.0.2 (State Management)
+- Vue Router 4.5.0 (Routing)
+- Vite 6.3.2 (Build Tool)
+- UnoCSS 66.5.2 (Atomic CSS)
+- Axios 1.8.4 (HTTP Client)
+
+**Core Modules:**
+- src/api - API service definitions and HTTP requests
+- src/views - Page components and business views
+- src/components - Reusable UI components
+- src/store - Pinia stores for state management
+- src/router - Vue Router configuration
+- src/layout - Layout components (Navbar, Sidebar, etc.)
+- src/utils - Utility functions and helpers
+- src/types - TypeScript type definitions
+- src/hooks - Composable functions
+- src/directive - Custom Vue directives
+- src/plugins - Vue plugins and extensions
+
+**Business Features:**
+- System Management (User, Role, Dept, Menu, Dict, Config)
+- Monitoring (Online Users, Login Logs, Operation Logs, Cache)
+- XiangYuPai User Profile Management
+- Workflow Management
+- Code Generation Tools
+
+## src
+
+```
+src\
+|-- views\
+|   |-- xypai\
+|   |   +-- user-profile\
+|   |-- workflow\
+|   |   |-- task\
+|   |   |-- spel\
+|   |   |-- processInstance\
+|   |   |-- processDefinition\
+|   |   |-- leave\
+|   |   +-- category\
+|   |-- user\
+|   |-- tool\
+|   |   +-- gen\
+|   |-- system\
+|   |   |-- user\
+|   |   |   +-- profile\
+|   |   |-- tenantPackage\
+|   |   |-- tenant\
+|   |   |-- role\
+|   |   |-- post\
+|   |   |-- oss\
+|   |   |-- occupation\
+|   |   |-- notice\
+|   |   |-- menu\
+|   |   |-- dict\
+|   |   |-- dept\
+|   |   |-- config\
+|   |   +-- client\
+|   |-- redirect\
+|   |-- monitor\
+|   |   |-- snailjob\
+|   |   |-- operlog\
+|   |   |-- online\
+|   |   |-- logininfor\
+|   |   |-- cache\
+|   |   +-- admin\
+|   |-- error\
+|   |-- demo\
+|   |   |-- tree\
+|   |   +-- demo\
+|   |-- register.vue
+|   |-- login.vue
+|   +-- index.vue
+|-- utils\
+|   |-- websocket.ts
+|   |-- validate.ts
+|   |-- theme.ts
+|   |-- sse.ts
+|   |-- scroll-to.ts
+|   |-- ruoyi.ts
+|   |-- request.ts
+|   |-- propTypes.ts
+|   |-- permission.ts
+|   |-- jsencrypt.ts
+|   |-- index.ts
+|   |-- i18n.ts
+|   |-- errorCode.ts
+|   |-- dynamicTitle.ts
+|   |-- dict.ts
+|   |-- crypto.ts
+|   |-- createCustomNameComponent.tsx
+|   +-- auth.ts
+|-- types\
+|   |-- router.d.ts
+|   |-- module.d.ts
+|   |-- global.d.ts
+|   |-- env.d.ts
+|   |-- element.d.ts
+|   |-- components.d.ts
+|   |-- axios.d.ts
+|   +-- auto-imports.d.ts
+|-- store\
+|   |-- modules\
+|   +-- index.ts
+|-- router\
+|   +-- index.ts
+|-- plugins\
+|-- layout\
+|   +-- components\
+|       |-- TopBar\
+|       |-- TagsView\
+|       |-- SocialCallback\
+|       |-- Sidebar\
+|       |-- Settings\
+|       |-- notice\
+|       |-- InnerLink\
+|       +-- IframeToggle\
+|-- lang\
+|-- hooks\
+|   +-- useDialog.ts
+|-- enums\
+|-- directive\
+|   |-- permission\
+|   +-- common\
+|-- components\
+|   |-- UserSelect\
+|   |-- TopNav\
+|   |-- SvgIcon\
+|   |-- SizeSelect\
+|   |-- Screenfull\
+|   |-- RuoYiGit\
+|   |-- RuoYiDoc\
+|   |-- RoleSelect\
+|   |-- RightToolbar\
+|   |-- Process\
+|   |-- ParentView\
+|   |-- Pagination\
+|   |-- LangSelect\
+|   |-- ImageUpload\
+|   |-- ImagePreview\
+|   |-- iFrame\
+|   |-- IconSelect\
+|   |-- Hamburger\
+|   |-- FileUpload\
+|   |-- Editor\
+|   |-- DictTag\
+|   +-- Breadcrumb\
+|-- assets\
+|   |-- styles\
+|   |-- logo\
+|   |-- images\
+|   |-- icons\
+|   |   +-- svg\
+|   |-- 404_images\
+|   +-- 401_images\
++-- api\
+    |-- xypai\
+    |   +-- user-profile\
+    |-- workflow\
+    |   |-- workflowCommon\
+    |   |-- task\
+    |   |-- spel\
+    |   |-- leave\
+    |   |-- instance\
+    |   |-- definition\
+    |   +-- category\
+    |-- user\
+    |   |-- wallet\
+    |   |-- user\
+    |   |-- transaction\
+    |   |-- stats\
+    |   |-- relation\
+    |   |-- occupation\
+    |   +-- dict\
+    |-- tool\
+    |   +-- gen\
+    |-- system\
+    |   |-- wallet\
+    |   |-- user\
+    |   |-- transaction\
+    |   |-- tenantPackage\
+    |   |-- tenant\
+    |   |-- stats\
+    |   |-- social\
+    |   |-- role\
+    |   |-- relation\
+    |   |-- post\
+    |   |-- ossConfig\
+    |   |-- oss\
+    |   |-- occupation\
+    |   |-- notice\
+    |   |-- menu\
+    |   |-- dict\
+    |   |   |-- type\
+    |   |   +-- data\
+    |   |-- dept\
+    |   |-- config\
+    |   +-- client\
+    |-- monitor\
+    |   |-- operlog\
+    |   |-- online\
+    |   |-- loginInfo\
+    |   +-- cache\
+    |-- demo\
+    |   |-- tree\
+    |   +-- demo\
+    |-- types.ts
+    |-- menu.ts
+    +-- login.ts
+```
+
+## vite
+
+```
+vite\
++-- plugins\
+```
+
+## public
+
+```
+public\
+```
+
+## Root Configuration Files
+
+- eslint.config.ts
+- index.html
+- LICENSE
+- package.json
+- README.md
+- tsconfig.json
+- uno.config.ts
+- vite.config.ts
+
+---
+
+**Note:** This is a complete directory tree (depth 10) showing ALL folders. 
+TypeScript/Vue files (.ts, .vue) are listed in key directories (pi/, iews/, store/, 
+outer/, 	ypes/, utils/, hooks/) to show what features are implemented.
+
