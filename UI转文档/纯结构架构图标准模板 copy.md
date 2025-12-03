@@ -1,4 +1,4 @@
-# 🌳 纯结构架构图标准模板 v5.4
+# 🌳 纯结构架构图标准模板 v5.2
 
 > **核心输出：JSON契约 → 流程图 → 树状图 + 布局 → 代码结构 → 后端MVP**
 >
@@ -34,11 +34,11 @@
 │                        UI图输入                                          │
 │                           ↓                                              │
 │  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │  STEP 1: 📋 页面数据模型（最重要！驱动前端构建）                    │    │
+│  │  STEP 1: 📋 JSON数据契约（最重要！固定整体架构）                    │    │
 │  │  ────────────────────────────────────────────────────────────    │    │
-│  │  • 定义页面和组件需要的数据结构                                     │    │
-│  │  • PageModel / AreaModel / ItemModel 层级                         │    │
-│  │  • 字段与 UI 元素的绑定关系                                         │    │
+│  │  • 分析页面所有数据来源                                            │    │
+│  │  • 按接口分类，定义请求/响应结构                                    │    │
+│  │  • 这是前后端开发的唯一契约                                         │    │
 │  └─────────────────────────────────────────────────────────────────┘    │
 │                           ↓                                              │
 │  ┌─────────────────────────────────────────────────────────────────┐    │
@@ -74,11 +74,11 @@
 │  └─────────────────────────────────────────────────────────────────┘    │
 │                           ↓                                              │
 │  ┌─────────────────────────────────────────────────────────────────┐    │
-│  │  STEP 6: 🗄️ 接口实现与后端设计                                     │    │
+│  │  STEP 6: 🗄️ 后端MVP（最小可行后端）                                │    │
 │  │  ────────────────────────────────────────────────────────────    │    │
-│  │  • 完整API接口定义（对应STEP 1数据模型）                            │    │
 │  │  • 核心数据库表设计                                                │    │
 │  │  • 核心SQL查询                                                     │    │
+│  │  • API实现逻辑                                                     │    │
 │  └─────────────────────────────────────────────────────────────────┘    │
 │                           ↓                                              │
 │                      完整开发文档                                         │
@@ -97,247 +97,195 @@ JSON先行：UI → JSON契约 → 前端+后端并行开发 → 联调
             一次定义，双方对齐，减少返工
 ```
 
-### 六步关联图
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         STEP 横向关联关系                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   STEP 1              STEP 2              STEP 3                            │
-│   数据模型     ←───→   流程图      ←───→   树状图                            │
-│   ──────────          ──────────          ──────────                        │
-│   定义 What           描述 When           描述 Where                         │
-│   PageModel           [API:xxx]           {Area} 组件                       │
-│   ItemModel           触发时机            [data:字段]                        │
-│       │                   │                   │                             │
-│       │                   ↓                   │                             │
-│       │              STEP 4: 布局             │                             │
-│       │              位置/尺寸/排列           │                             │
-│       │                   │                   │                             │
-│       │                   ↓                   │                             │
-│       │              STEP 5: 代码             │                             │
-│       │              文件夹/文件              │                             │
-│       │                   │                   │                             │
-│       └───────────────────┼───────────────────┘                             │
-│                           ↓                                                 │
-│                      STEP 6: 接口+后端                                       │
-│                      定义 How                                               │
-│                      API实现 + 数据库                                        │
-│                                                                             │
-│   ┌─────────────────────────────────────────────────────────────────────┐   │
-│   │ 关键映射：                                                           │   │
-│   │ • STEP 1 数据模型 ─→ STEP 3 组件 [data:字段] 绑定                    │   │
-│   │ • STEP 1 数据模型 ─→ STEP 6 接口响应结构                             │   │
-│   │ • STEP 2 流程 ─→ STEP 6 接口触发时机                                 │   │
-│   │ • STEP 3 组件 ─→ STEP 5 代码文件路径                                 │   │
-│   │ • STEP 4 布局 ─→ STEP 5 可视化布局图                                 │   │
-│   └─────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
 ### 快速检查清单
 
 ```
-□ STEP 1: 数据模型是否覆盖页面所有组件的数据需求？
-□ STEP 2: 流程图是否覆盖所有交互？是否标注接口调用（→ STEP 6）？
-□ STEP 3: 树状图是否标注了数据绑定来源（→ STEP 1）？
+□ STEP 1: JSON契约是否覆盖页面所有数据？
+□ STEP 2: 流程图是否覆盖所有交互？是否与接口对应？
+□ STEP 3: 树状图是否标注了数据绑定来源？
 □ STEP 4: 布局图是否清晰可视化？
 □ STEP 5: 代码结构是否可直接创建文件夹？
-□ STEP 6: 接口响应是否对应 STEP 1 的数据模型？数据库是否完整？
+□ STEP 6: 后端MVP是否只包含核心表和接口？
 ```
 
 ---
 
-## 📋 STEP 1: 页面数据模型定义
+## 📋 STEP 1: JSON数据契约模板
 
-> **📌 目标**：从 UI 反推页面和组件需要的数据结构，定义驱动前端构建的核心 JSON 模型
+> **📌 目标**：分析 UI 中所有动态数据来源，定义前后端通信的接口契约（Single Source of Truth）
 >
 > **📤 产出**：
-> - 页面级数据模型（PageModel）
-> - 组件级数据模型（AreaModel / ItemModel）
+> - 完整的接口列表（包含请求/响应结构）
 > - 每个字段与 UI 元素的绑定关系
-> - 可复用的数据类型定义
-> - 数据依赖关系图
+> - 接口汇总表（方法、路径、触发时机、缓存策略）
+> - 可复用的数据模型定义
 
-### 设计理念
-
-```
-核心思想：数据驱动 UI，先定义"页面需要什么数据"，再考虑"数据从哪来"
-
-STEP 1 职责：定义前端需要的数据结构（What）
-STEP 6 职责：定义如何获取这些数据（How）→ 接口 + 数据库
-
-关系示意：
-┌─────────────────────────────────────────────────────────────────┐
-│  STEP 1: 数据模型                    STEP 6: 数据实现            │
-│  ─────────────────                   ─────────────────           │
-│  PageModel {                    →    GET /api/{module}/list      │
-│    {ListData}                        POST /api/{module}/action   │
-│    {ConfigData}                      数据库表设计                 │
-│  }                                   SQL 查询                    │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### 数据模型层级
+### 契约设计原则
 
 ```
-数据模型层级（对应 STEP 3 组件层级）：
-├── 📱 PageModel [L1]      - 页面级数据模型，组合多个 AreaModel
-├── 📦 AreaModel [L2]      - 区域级数据模型，对应 XXXArea 组件
-├── 🧩 ItemModel [L3]      - 列表项数据模型，对应 XXXItem 组件
-└── 🔧 SharedModel [L4]    - 共享数据模型，跨页面复用
+核心理念：JSON契约是前后端开发的唯一真相来源（Single Source of Truth）
+
+设计原则：
+├── 🎯 UI驱动 - 从UI元素反推需要的数据字段
+├── 📍 位置绑定 - 每个字段标注绑定到UI的具体位置
+├── 🔀 条件标注 - 标明字段的显示条件和业务逻辑
+├── 📦 完整性 - 覆盖页面所有动态数据，不遗漏
+└── 🔄 可追溯 - 从UI到接口、从接口到数据库可双向追溯
 ```
 
-### 页面数据模型模板
+### 接口分类体系
+
+```
+按触发时机分类：
+├── 🔄 初始化接口 - 页面加载时调用（优先级最高）
+├── 📜 列表接口 - 分页/刷新/加载更多
+├── 🎯 操作接口 - 用户交互触发（点赞、收藏、关注、提交等）
+├── 🔧 配置接口 - 获取静态配置（Tab、筛选项，可缓存）
+└── 🌐 公共接口 - 跨页面共享（底部导航、用户信息等）
+
+按数据流向分类：
+├── 📥 读取类 - GET 请求，获取数据展示
+├── 📤 写入类 - POST/PUT/DELETE 请求，提交数据变更
+└── 📡 实时类 - WebSocket，实时推送更新
+```
+
+### JSON契约完整模板
 
 ```json
 {
-  "模型信息": {
-    "页面名称": "{页面中文名}",
-    "页面标识": "{PageName}",
-    "所属模块": "{ModuleName}",
-    "页面类型": "{列表页|详情页|表单页|聚合页}"
+  "文档信息": {
+    "页面名称": "[页面中文名]",
+    "页面路由": "/[module]/[page]",
+    "所属模块": "[模块名]",
+    "页面类型": "[列表页|详情页|表单页|聚合页]",
+    "版本": "v1.0",
+    "最后更新": "YYYY-MM-DD"
   },
 
-  "数据依赖图": "{ConfigData} + {ListData} → 渲染页面 → 用户操作 → {ActionResult}",
+  "接口依赖图": "页面初始化 → [配置接口] + [列表接口] → 用户操作 → [操作接口]",
 
-  "PageModel": {
-    "_说明": "页面级数据模型 [L1]，组合所有区域数据",
+  "接口列表": [
+    {
+      "序号": 1,
+      "接口名": "[接口名称]",
+      "接口标识": "[apiGetXxx|apiPostXxx]",
+      "路径": "[METHOD] /api/[module]/[action]",
+      "触发时机": "[页面初始化|下拉刷新|上拉加载|Tab切换|点击XX|条件:XX时]",
+      "调用频率": "[单次|多次(分页)|按需]",
+      "缓存策略": "[无|本地缓存Xmin|内存缓存|Redis缓存Xmin]",
+      "依赖接口": "[无|依赖接口X返回的字段Y]",
+      "错误处理": "[Toast提示|弹窗确认|静默重试|降级显示]",
 
-    "{HeaderData}": {
-      "_说明": "头部区域数据 → [→{HeaderArea}]",
-      "{title}": "String - 页面标题 - [UI:{HeaderArea}.标题]",
-      "{subtitle}": "String? - 副标题 - [UI:{HeaderArea}.副标题] [可选]"
-    },
+      "请求参数": {
+        "必填参数": {
+          "param1": "类型 - 说明 - 示例值",
+          "param2": "类型(枚举值1|枚举值2) - 说明 - 默认值"
+        },
+        "可选参数": {
+          "param3": "类型 - 说明 - [条件:仅当XX时需要]",
+          "page": "Number - 页码 - 默认1",
+          "pageSize": "Number - 每页数量 - 默认20"
+        }
+      },
 
-    "{TabData}": {
-      "_说明": "Tab区域数据 → [→{TabArea}]",
-      "{tabs}": "Array<{TabItem}> - Tab列表 - [UI:{TabArea}]",
-      "{currentTab}": "String - 当前选中Tab - [状态:控制列表筛选]"
-    },
+      "响应数据": {
+        "code": "Number - 状态码 - 200成功",
+        "message": "String - 提示信息",
+        "data": {
+          "field1": "类型 - 说明 - [UI:组件.区域.元素]",
+          "field2": "类型(枚举值) - 说明 - [UI:位置] [条件:决定XX显示]",
+          "nested": {
+            "_说明": "嵌套对象说明",
+            "subField1": "类型 - 说明 - [UI:位置]",
+            "subField2": "类型 - 说明 - [UI:位置]"
+          },
+          "list": "[Array<Item>] - 列表数据 - [UI:XX列表]",
+          "hasMore": "Boolean - 是否有更多 - [控制:加载更多/到底提示]",
+          "total": "Number - 总数 - [可选:用于显示计数]"
+        }
+      },
 
-    "{ListData}": {
-      "_说明": "列表区域数据 → [→{ContentArea}]",
-      "{list}": "Array<{ContentItem}> - 内容列表 - [UI:{ContentArea}]",
-      "{hasMore}": "Boolean - 是否有更多 - [控制:加载更多/到底提示]",
-      "{total}": "Number? - 总数 - [UI:{HeaderArea}.计数] [可选]"
-    },
-
-    "{PageState}": {
-      "_说明": "页面状态数据",
-      "{isLoading}": "Boolean - 加载中 - [状态:骨架屏/Loading]",
-      "{isRefreshing}": "Boolean - 刷新中 - [状态:下拉刷新指示器]",
-      "{isError}": "Boolean - 加载失败 - [状态:错误提示]",
-      "{errorMessage}": "String? - 错误信息 - [UI:错误提示文案]"
-    }
-  }
-}
-```
-
-### 组件数据模型模板
-
-```json
-{
-  "AreaModel": {
-    "_说明": "区域级数据模型 [L2]",
-
-    "{TabArea}": {
-      "{tabs}": "Array<{TabItem}> - Tab列表",
-      "{TabItem}": {
-        "{key}": "String - Tab标识 - [用于:筛选参数]",
-        "{label}": "String - Tab文案 - [UI:Tab.文字]",
-        "{isActive}": "Boolean - 是否选中 - [状态:选中样式]",
-        "{badge}": "Number? - 角标数 - [UI:Tab.角标] [条件:>0时显示]"
+      "响应示例": {
+        "_说明": "提供一个真实的响应示例，帮助理解数据结构"
       }
-    },
+    }
+  ],
 
-    "{ContentArea}": {
-      "{list}": "Array<{ContentItem}> - 内容列表",
-      "{layoutType}": "String(grid|list|waterfall) - 布局类型 - [控制:布局切换]"
+  "数据模型定义": {
+    "_说明": "定义可复用的数据结构，避免重复描述",
+    "Item": {
+      "id": "String - 唯一标识",
+      "其他字段": "..."
+    },
+    "Author": {
+      "userId": "String - 用户ID",
+      "nickname": "String - 昵称",
+      "avatar": "String - 头像URL"
     }
   },
 
-  "ItemModel": {
-    "_说明": "列表项数据模型 [L3]",
-
-    "{ContentItem}": {
-      "_说明": "内容卡片数据 → [→{ItemComponent}]",
-
-      "{id}": "String - 主体ID - [用于:跳转详情、操作参数]",
-      "{type}": "String({type1}|{type2}) - 类型 - [条件:决定显示样式]",
-
-      "{mediaData}": {
-        "_说明": "媒体区域 → [→{ItemComponent}.媒体区]",
-        "{coverUrl}": "String - 封面URL - [UI:卡片.封面图]",
-        "{aspectRatio}": "Number - 宽高比 - [计算:高度=宽度/ratio]",
-        "{duration}": "Number? - 时长(秒) - [UI:卡片.时长标签] [条件:type=video]",
-        "{badge}": "String? - 角标文案 - [UI:卡片.角标] [条件:有值时显示]"
-      },
-
-      "{textData}": {
-        "_说明": "文本区域 → [→{ItemComponent}.文本区]",
-        "{title}": "String - 标题 - [UI:卡片.标题] [样式:14sp,最多2行,省略]",
-        "{description}": "String? - 描述 - [UI:卡片.描述] [可选]"
-      },
-
-      "{authorData}": {
-        "_说明": "作者信息 → [→{ItemComponent}.作者区]",
-        "{userId}": "String - 用户ID - [用于:跳转用户主页]",
-        "{avatar}": "String - 头像URL - [UI:卡片.头像] [样式:24x24圆形]",
-        "{nickname}": "String - 昵称 - [UI:卡片.昵称]",
-        "{isFollowed}": "Boolean? - 是否已关注 - [UI:关注按钮状态]"
-      },
-
-      "{statsData}": {
-        "_说明": "统计数据 → [→{ItemComponent}.统计区]",
-        "{likeCount}": "Number - 点赞数 - [UI:卡片.点赞] [格式:>=10000显示1.2w]",
-        "{isLiked}": "Boolean - 是否已赞 - [状态:点赞按钮] [true=红心,false=空心]",
-        "{commentCount}": "Number? - 评论数 - [UI:卡片.评论] [可选]"
-      },
-
-      "{metaData}": {
-        "_说明": "元信息",
-        "{createTime}": "String(ISO8601) - 创建时间 - [格式:刚刚/X分钟前/MM-DD]",
-        "{location}": "String? - 位置 - [UI:卡片.位置] [可选]"
-      }
-    }
+  "状态码定义": {
+    "200": "成功",
+    "400": "参数错误",
+    "401": "未登录",
+    "403": "无权限",
+    "404": "资源不存在",
+    "500": "服务器错误"
   }
 }
 ```
 
-### 共享数据模型
+### 常见页面类型的接口模式
 
-```json
-{
-  "SharedModel": {
-    "_说明": "跨页面复用的数据模型 [L4]",
+```
+📋 列表页（如：发现页、消息列表、关注列表）
+├── GET  /api/[module]/list           主列表数据（分页）
+│   ├── 请求: { tab, page, pageSize, [筛选条件] }
+│   └── 响应: { list[], hasMore, total }
+├── GET  /api/[module]/tabs           Tab配置（可缓存）
+│   └── 响应: { tabs[{ key, label, isDefault }] }
+├── POST /api/[module]/[action]       单项操作（点赞、关注等）
+│   ├── 请求: { targetId, action }
+│   └── 响应: { success, [newCount] }
+└── GET  /api/common/tabbar           底部导航（全局共享）
 
-    "{UserInfo}": {
-      "_说明": "用户基础信息（多处复用）",
-      "{userId}": "String - 用户ID",
-      "{nickname}": "String - 昵称",
-      "{avatar}": "String - 头像URL",
-      "{level}": "Number? - 等级",
-      "{isVip}": "Boolean? - 是否VIP"
-    },
+📝 详情页（如：内容详情、用户主页、商品详情）
+├── GET  /api/[module]/{id}           主体详情
+│   └── 响应: { 基础信息, 统计数据, 用户关系状态 }
+├── GET  /api/[module]/{id}/comments  评论列表（分页）
+│   ├── 请求: { page, pageSize, sort }
+│   └── 响应: { list[], hasMore }
+├── GET  /api/[module]/{id}/related   相关推荐
+│   └── 响应: { list[] }
+└── POST /api/[module]/{id}/[action]  操作（收藏、分享、举报）
+    ├── 请求: { action, [reason] }
+    └── 响应: { success }
 
-    "{PaginationInfo}": {
-      "_说明": "分页信息",
-      "{page}": "Number - 当前页码",
-      "{pageSize}": "Number - 每页数量",
-      "{hasMore}": "Boolean - 是否有更多",
-      "{total}": "Number? - 总数"
-    },
+✏️ 表单页（如：发布内容、编辑资料、提交订单）
+├── GET  /api/[module]/form-config    表单配置（选项、限制）
+│   └── 响应: { fields[], options{}, limits{} }
+├── GET  /api/[module]/{id}           编辑时获取原数据
+│   └── 响应: { 原有字段值 }
+├── POST /api/[module]/create         新建提交
+│   ├── 请求: { 表单字段 }
+│   └── 响应: { id, success }
+├── PUT  /api/[module]/{id}           编辑提交
+│   ├── 请求: { 表单字段 }
+│   └── 响应: { success }
+├── POST /api/[module]/upload         文件上传（图片、视频）
+│   ├── 请求: FormData { file, type }
+│   └── 响应: { url, [thumbnailUrl], [duration] }
+└── POST /api/[module]/draft          草稿保存
+    ├── 请求: { 部分字段 }
+    └── 响应: { draftId }
 
-    "{ActionResult}": {
-      "_说明": "操作结果",
-      "{success}": "Boolean - 是否成功",
-      "{message}": "String? - 提示信息",
-      "{newValue}": "Any? - 新值（如新的计数）"
-    }
-  }
-}
+🏠 聚合页（如：首页、个人中心）
+├── GET  /api/[module]/home           聚合数据
+│   └── 响应: { banner[], quickEntry[], sections[] }
+├── GET  /api/[module]/section/{type} 分区数据（按需加载）
+│   └── 响应: { list[], hasMore }
+└── GET  /api/user/profile            用户信息
+    └── 响应: { 基础信息, 统计数据, 设置状态 }
 ```
 
 ### 字段类型标注规范
@@ -443,101 +391,126 @@ STEP 6 职责：定义如何获取这些数据（How）→ 接口 + 数据库
 }
 ```
 
-**【示例D：聚合页】**
+### 条件字段与业务逻辑标注
+
+**通用标注模式：**
+
+```
+条件显示:   [条件:{字段}={值}] - 满足条件时显示
+状态切换:   [状态:{字段}] - [true→效果A, false→效果B]
+格式化:     [格式:{规则描述}]
+计算字段:   [计算:{公式}]
+```
+
+**【条件显示字段模式】**
 ```json
 {
-  "PageModel": {
-    "_说明": "聚合页数据模型 - 多区块组合",
-
-    "{BannerData}": {
-      "_说明": "轮播区域 → [→{BannerSection}]",
-      "{banners}": "Array<{BannerItem}> - 轮播列表 - [UI:轮播区]",
-      "{BannerItem}": {
-        "{imageUrl}": "String - 图片URL - [UI:轮播图]",
-        "{linkUrl}": "String - 跳转链接 - [用于:点击跳转]",
-        "{linkType}": "String(page|webview|deeplink) - 链接类型"
-      }
-    },
-
-    "{EntryData}": {
-      "_说明": "快捷入口区域 → [→{QuickEntrySection}]",
-      "{entries}": "Array<{EntryItem}> - 入口列表 - [UI:金刚区]",
-      "{EntryItem}": {
-        "{icon}": "String - 图标URL - [UI:入口.图标]",
-        "{title}": "String - 标题 - [UI:入口.文字]",
-        "{link}": "String - 跳转链接"
-      }
-    },
-
-    "{SectionList}": {
-      "_说明": "内容区块列表 → 动态渲��多个区块",
-      "{sections}": "Array<{SectionData}> - 区块列表",
-      "{SectionData}": {
-        "{sectionId}": "String - 区块ID - [用于:懒加载请求]",
-        "{sectionType}": "String(recommend|hot|nearby) - 区块类型 - [条件:决定渲染样式]",
-        "{title}": "String - 区块标题 - [UI:区块.标题]",
-        "{moreLink}": "String? - 查看更多链接 - [UI:区块.更多] [可选]",
-        "{items}": "Array<{ContentItem}> - 区块内容 - [UI:区块.列表]"
-      }
-    }
+  "条件显示": {
+    "_说明": "根据某字段值决定是否显示某UI元素",
+    "场景1-类型判断": "[条件:type={某值}] - 显示对应图标/标签",
+    "场景2-状态判断": "[条件:status={某值}] - 显示对应状态标识",
+    "场景3-权限判断": "[条件:hasPermission=true] - 显示操作按钮",
+    "场景4-数量判断": "[条件:count>0] - 显示角标/计数",
+    "场景5-组合条件": "[条件:A且B] - 同时满足多条件时显示"
   }
 }
 ```
 
-### 业务逻辑标注速查表
+**【状态切换字段模式】**
+```json
+{
+  "状态切换": {
+    "_说明": "用户操作可切换的状态字段",
+    "二元状态": "{isXxx}: Boolean - [true→激活样式, false→默认样式] [点击切换]",
+    "多态状态": "{status}: String(a|b|c) - [a→样式A, b→样式B, c→样式C]"
+  }
+}
+```
+
+**【格式化字段模式】**
+```json
+{
+  "格式化": {
+    "_说明": "需要前端格式化显示的字段",
+    "数字格式化": "{count}: Number - [<1000原样, >=1000显示Xk, >=10000显示Xw]",
+    "时间格式化": "{time}: String - [<1分钟'刚刚', <1小时'X分钟前', <24小时'X小时前', 其他'MM-DD']",
+    "大小格式化": "{size}: Number(bytes) - [自动转KB/MB/GB]",
+    "距离格式化": "{distance}: Number(meters) - [<1000显示Xm, >=1000显示X.Xkm]"
+  }
+}
+```
+
+**【计算字段模式】**
+```json
+{
+  "计算字段": {
+    "_说明": "需要前端计算得出的值",
+    "尺寸计算": "{height}: [计算:containerWidth * ratio]",
+    "进度计算": "{progress}: [计算:current/total * 100]",
+    "差值计算": "{remaining}: [计算:total - used]"
+  }
+}
+```
+
+### 接口汇总表模板
+
+```markdown
+| 序号 | 接口名 | 方法 | 路径 | 触发时机 | 缓存 |
+|------|--------|------|------|----------|------|
+| 1 | 获取{主体}列表 | GET | /api/{module}/list | 初始化/刷新/加载更多 | 无 |
+| 2 | {操作}动作 | POST | /api/{module}/{action} | 点击{触发元素} | 无 |
+| 3 | {配置}获取 | GET | /api/{module}/config | 页面初始化 | 本地{X}min |
+| 4 | 底部导航 | GET | /api/common/tabbar | App初始化 | 本地30min |
+```
+
+**常见触发时机：**
+- 页面初始化、下拉刷新、上拉加载、Tab切换
+- 点击按钮、表单提交、滑动切换
+- 条件触发（如：滚动到某位置、定时刷新）
+
+---
+
+## 📐 符号系统
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│  标注类型        语法格式                    常见场景                        │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  条件显示        [条件:{字段}={值}]          type=video → 显示时长标签       │
-│                  [条件:{字段}>0]             count>0 → 显示角标              │
-│                  [条件:A且B]                 isVip且level>5 → 显示徽章       │
-│                                                                             │
-│  状态切换        [状态:{字段}]               isLiked: true→红心, false→空心  │
-│                  [true→效果A, false→效果B]   isFollowed: true→已关注, false→关注 │
-│                                                                             │
-│  格式化          [格式:数字]                 count: <1000原样, >=10000显示Xw │
-│                  [格式:时间]                 time: <1分钟'刚刚', <1小时'X分钟前' │
-│                  [格式:大小]                 size: 自动转KB/MB/GB            │
-│                  [格式:距离]                 distance: <1000显示Xm, >=1000显示Xkm │
-│                                                                             │
-│  计算字段        [计算:{公式}]               height = containerWidth * ratio │
-│                                             progress = current/total * 100  │
-│                                             remaining = total - used        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+【页面】📱   《组件》📋   「按钮/功能」   (注：说明)
+
+位置: [位置:TL/TC/TR/ML/MC/MR/BL/BC/BR]
+行列: [R1-C2] [R1:R3-全行] [R-Last]
+布局: [布局:flex-row] [布局:grid-cols-2] [gap-12px]
+层级: [L1-页面] [L2-区域] [L3-基础]
+拆分: [拆分:3个L3] [1模板x4实例] ← 复用XXX
+相对: [↗️右上角] [➡️右侧] [⬇️下方] [间距:12px]
+尺寸: [尺寸:48x48px] [高度:56px] [圆角:12px]
+样式: (白色背景+圆角12px+阴影2px) (16sp#333333粗体)
+数据: [data:字段名] ← 标注数据来源
 ```
 
 ---
 
 ## 🔄 STEP 2: 流程图模板
 
-> **📌 目标**：基于 STEP 1 的数据模型，描述数据如何在页面流转，明确接口调用时机和用户操作路径
+> **📌 目标**：基于 STEP 1 的接口契约，描述数据如何在页面流转，明确接口调用时机和用户操作路径
 >
 > **📤 产出**：
 > - 页面初始化流程（进入页面 → 调用哪些接口 → 渲染数据）
 > - 用户交互路径（列表交互、单项操作、导航跳转 → 触发哪些接口）
 > - 状态管理流程（加载中、加载失败、空数据、到底了）
-> - 流程与 STEP 6 接口的直接对应关系
+> - 流程与 STEP 1 接口的直接对应关系
 > - 交互涉及的组件区域标注（→ STEP 3 弱关联）
 
 ### 流程与组件关联说明
 
 ```
 标注格式：
-├── [API:{接口标识}]     - 调用 STEP 6 定义的接口
+├── [API:{接口标识}]     - 调用 STEP 1 定义的接口
 ├── [→{Area}]           - 数据渲染到 STEP 3 的组件区域
 ├── [触发:{Area}]       - 用户在某组件区域触发的操作
 └── [状态:{Area}]       - 组件区域的状态变化
 
 关联示意：
-STEP 1 (数据模型)  ←──→  STEP 2 (流程)  ←──→  STEP 3 (组件)
-   PageModel/ItemModel      数据流转              UI结构
-         ↓                      ↓
-   STEP 6 (接口)           触发接口调用
-   API实现+数据库
+STEP 1 (数据)  ←──→  STEP 2 (流程)  ←──→  STEP 3 (组件)
+   接口契约              数据流转              UI结构
 ```
 
 ### 通用流程图模板
@@ -732,10 +705,10 @@ STEP 1 (数据模型)  ←──→  STEP 2 (流程)  ←──→  STEP 3 (组�
 │   ├── 【{页面B}】[L1] = {Area1} + {Area3} + ...
 │   └── ...
 │
-└── 🔧 服务层（对应 STEP 6 的接口）
-    ├── 📡 GET /api/{module}/config    → 配置服务 [→ PageModel.{TabData}]
-    ├── 📡 GET /api/{module}/list      → 列表服务 [→ PageModel.{ListData}]
-    └── 📡 POST /api/{module}/{action} → 操作服务 [→ SharedModel.{ActionResult}]
+└── 🔧 服务层（对应STEP 1的接口）
+    ├── 📡 GET /api/{module}/config    → 配置服务
+    ├── 📡 GET /api/{module}/list      → 列表服务
+    └── 📡 POST /api/{module}/{action} → 操作服务
 
 树状图标注说明：
 ├── [L1/L2/L3/L4]  - 层级标识，对应 STEP 4 布局模板和 STEP 5 代码结构
@@ -745,56 +718,6 @@ STEP 1 (数据模型)  ←──→  STEP 2 (流程)  ←──→  STEP 3 (组�
 ├── [1模板x{N}实例] - 模板复用，数据驱动渲染N个实例
 ├── [data:{字段}]   - 数据绑定，来自 STEP 1 的 JSON 契约
 └── 文件:           - 对应 STEP 5 的代码文件路径
-```
-
-### 页面类型树状图变体
-
-```
-📝 详情页树状图：
-├── 【{DetailPage}】📱 [L1]
-│   ├── 📍 {HeaderArea} [L2] [固定顶部]
-│   │   └── 返回 + 标题 + [分享/更多]
-│   │
-│   ├── 🏷️ {MediaArea} [L2] [可选]
-│   │   └── 图片轮播/视频播放器 [data:{mediaData}]
-│   │
-│   ├── 🏷️ {DetailArea} [L2] [flex:1, 可滚动]
-│   │   ├── 《AuthorInfo》[L3] [data:{authorData}]
-│   │   ├── 《ContentBody》[L3] [data:{contentData}]
-│   │   ├── 《StatsBar》[L3] [data:{statsData}]
-│   │   └── 《CommentList》[L3] [data:{commentList}] [1模板x{N}实例]
-│   │
-│   └── 📍 {ActionBarArea} [L2] [固定底部]
-│       └── 评论输入 + 点赞 + 收藏 + 分享
-
-✏️ 表单页树状图：
-├── 【{FormPage}】📱 [L1]
-│   ├── 📍 {HeaderArea} [L2] [固定顶部]
-│   │   └── 关闭/返回 + 标题 + [草稿]
-│   │
-│   ├── 🏷️ {FormArea} [L2] [flex:1, 可滚动]
-│   │   ├── 《MediaUpload》[L3] [可选] [data:{mediaField}]
-│   │   ├── 《TextInput》[L3] [data:{titleField}]
-│   │   ├── 《TextArea》[L3] [data:{contentField}]
-│   │   ├── 《TagSelector》[L3] [可选] [data:{tagsField}]
-│   │   └── 《OptionPicker》[L3] [可选] [data:{optionField}]
-│   │
-│   └── 📍 {ActionBarArea} [L2] [固定底部]
-│       └── [取消] + 「发布/提交」
-
-🏠 聚合页树状图：
-├── 【{HomePage}】📱 [L1]
-│   ├── 📍 {HeaderArea} [L2] [固定顶部]
-│   │   └── Logo + 搜索入口 + 消息入口
-│   │
-│   ├── 🏷️ {ContentArea} [L2] [flex:1, 可滚动]
-│   │   ├── 《BannerSection》[L3] [data:{bannerData}]
-│   │   ├── 《QuickEntrySection》[L3] [data:{entryData}]
-│   │   ├── 《RecommendSection》[L3] [data:{recommendData}]
-│   │   └── 《FeedSection》[L3] [data:{feedData}] [懒加载]
-│   │
-│   └── 📍 {TabBarArea} [L2] [固定底部]
-│       └── 《TabItem》[L3] [1模板x{N}实例]
 ```
 
 ### 列表控制（通用）
@@ -809,24 +732,30 @@ STEP 1 (数据模型)  ←──→  STEP 2 (流程)  ←──→  STEP 3 (组�
 └── 到底提示: [条件:hasMore=false] "{到底文案}"
 ```
 
-### 组件拆分规则
+---
 
+## 🧩 组件拆分
+
+### 三层架构
 ```
-三层架构：
-├── L1-页面: 完整页面 → 拆分 3-7 个 L2
-├── L2-区域: 功能区块 → 拆分 2-6 个 L3
-└── L3-基础: 最小单元 → 可复用组件
+L1-页面: 完整页面 → 拆分3-7个L2
+L2-区域: 功能区块 → 拆分2-6个L3
+L3-基础: 最小单元 → 可复用组件
+```
 
-拆分数量参考：
-├── 简单页面: L2×2-3 + L3×3-5 = 5-8 个组件
-├── 中等页面: L2×4-6 + L3×8-12 = 12-18 个组件
-└── 复杂页面: L2×6-10 + L3×15-25 = 21-35 个组件
+### 拆分数量参考
+```
+简单页面: L2×2-3 + L3×3-5 = 5-8个
+中等页面: L2×4-6 + L3×8-12 = 12-18个
+复杂页面: L2×6-10 + L3×15-25 = 21-35个
+```
 
-复用标记：
-├── ← 复用XXX        表示复用某组件
-├── [1模板xN实例]    模板复用N次
-├── [拆分:3个L3]     拆分为3个子组件
-└── 复用性: 高(全局) / 中(跨页) / 低(页面内)
+### 复用标记
+```
+← 复用XXX          表示复用某组件
+[1模板xN实例]      模板复用N次
+[拆分:3个L3]       拆分为3个子组件
+复用性: 高(全局) / 中(跨页) / 低(页面内)
 ```
 
 ---
@@ -976,7 +905,7 @@ src/modules/
 │
 ├─ {ModuleName}/                         # 业务功能模块
 │   │
-│   ├─ api/                              # 模块级API（对应 STEP 6 的接口定义）
+│   ├─ api/                              # 模块级API（对应STEP 1的接口）
 │   │   ├─ apiGetConfig.ts
 │   │   ├─ apiGetList.ts
 │   │   └─ apiPostAction.ts
@@ -1155,211 +1084,17 @@ API接口       api{Name}[Action].[ext]         apiUserLogin.ts
 
 ---
 
-## 🗄️ STEP 6: 接口实现与后端设计
+## 🗄️ STEP 6: 后端MVP设计
 
-> **📌 目标**：基于 STEP 1 的数据模型，定义完整的 API 接口实现，并设计支撑数据库
+> **📌 目标**：从 STEP 1 的 JSON 契约反推最小可行后端，设计核心数据库表和实现逻辑
 >
 > **📤 产出**：
-> - 完整的接口定义（路径、方法、请求/响应）
-> - 接口与 STEP 1 数据模型的映射关系
 > - 核心数据库表设计（建表 SQL）
-> - 核心 SQL 查询语句
+> - 核心 SQL 查询语句（列表查询、操作增删）
 > - MVP 清单表（功能、涉及表、接口、优先级）
+> - 性能优化检查点（索引、冗余、分页、缓存）
 
-### 设计理念
-
-```
-STEP 1 → STEP 6 的映射关系：
-
-┌─────────────────────────────────────────────────────────────────────────┐
-│  STEP 1: 数据模型（前端需要什么）     STEP 6: 接口实现（后端如何提供）  │
-│  ──────────────────────────────       ───────────────────────────────   │
-│                                                                         │
-│  PageModel                       →    页面初始化时调用的接口组合         │
-│    ├─ {TabData}                  →    GET /api/{module}/config          │
-│    ├─ {ListData}                 →    GET /api/{module}/list            │
-│    └─ {ActionResult}             →    POST /api/{module}/{action}       │
-│                                                                         │
-│  ItemModel                       →    list 接口的 data.list[] 结构      │
-│    ├─ {authorData}               →    JOIN users 表                     │
-│    ├─ {statsData}.{isLiked}      →    LEFT JOIN {关系}表                │
-│    └─ {statsData}.{likeCount}    →    {主体}表.like_count 冗余字段      │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-### 接口分类体系
-
-```
-按触发时机分类（对应 STEP 2 流程）：
-├── 🔄 初始化接口 - 页面加载时调用 → [API:{configApi}] [API:{listApi}]
-├── 📜 列表接口 - 分页/刷新/加载更多 → [API:{listApi}]
-├── 🎯 操作接口 - 用户交互触发 → [API:{actionApi}]
-├── 🔧 配置接口 - 获取静态配置（可缓存）
-└── 🌐 公共接口 - 跨页面共享（底部导航等）
-
-按数据流向分类：
-├── 📥 读取类 - GET 请求，返回 STEP 1 定义的数据模型
-├── 📤 写入类 - POST/PUT/DELETE 请求，返回 ActionResult
-└── 📡 实时类 - WebSocket，推送更新
-```
-
-### 接口定义模板
-
-```json
-{
-  "接口文档信息": {
-    "对应页面": "{PageName}",
-    "对应数据模型": "STEP 1 → PageModel",
-    "版本": "v1.0"
-  },
-
-  "接口列表": [
-    {
-      "序号": 1,
-      "接口名": "获取{主体}列表",
-      "接口标识": "{listApi}",
-      "路径": "GET /api/{module}/list",
-      "触发时机": "[API:{listApi}] 页面初始化/下拉刷新/上拉加载/Tab切换",
-      "对应数据模型": "STEP 1 → PageModel.{ListData}",
-
-      "请求参数": {
-        "{tab}": "String? - Tab标识 - 来自 STEP 1 → {TabItem}.{key}",
-        "{page}": "Number - 页码 - 默认1",
-        "{pageSize}": "Number - 每页数量 - 默认20",
-        "{筛选条件}": "类型? - 说明 - [可选]"
-      },
-
-      "响应数据": {
-        "code": "Number - 状态码 - 200成功",
-        "message": "String - 提示信息",
-        "data": {
-          "_映射": "→ STEP 1: PageModel.{ListData}",
-          "{list}": "Array<{ContentItem}> - 内容列表",
-          "{hasMore}": "Boolean - 是否有更多",
-          "{total}": "Number? - 总数"
-        }
-      },
-
-      "响应示例": {
-        "code": 200,
-        "message": "success",
-        "data": {
-          "list": [
-            {
-              "id": "123",
-              "mediaData": { "coverUrl": "...", "aspectRatio": 0.75 },
-              "textData": { "title": "..." },
-              "authorData": { "userId": "u1", "nickname": "...", "avatar": "..." },
-              "statsData": { "likeCount": 1234, "isLiked": false }
-            }
-          ],
-          "hasMore": true,
-          "total": 100
-        }
-      },
-
-      "数据库映射": {
-        "_说明": "此接口数据来源",
-        "{list}[].{id}": "{主体表}.id",
-        "{list}[].{mediaData}": "{主体表}.cover_url, {主体表}.aspect_ratio",
-        "{list}[].{authorData}": "JOIN users ON {主体表}.user_id = users.id",
-        "{list}[].{statsData}.{isLiked}": "LEFT JOIN {关系表} 判断当前用户"
-      }
-    },
-
-    {
-      "序号": 2,
-      "接口名": "获取配置",
-      "接口标识": "{configApi}",
-      "路径": "GET /api/{module}/config",
-      "触发时机": "[API:{configApi}] 页面初始化",
-      "缓存策略": "本地缓存 30min",
-      "对应数据模型": "STEP 1 → PageModel.{TabData}",
-
-      "请求参数": {},
-
-      "响应数据": {
-        "code": "Number - 状态码",
-        "data": {
-          "_映射": "→ STEP 1: PageModel.{TabData}",
-          "{tabs}": "Array<{TabItem}> - Tab列表"
-        }
-      }
-    },
-
-    {
-      "序号": 3,
-      "接口名": "{操作}动作",
-      "接口标识": "{actionApi}",
-      "路径": "POST /api/{module}/{action}",
-      "触发时机": "[API:{actionApi}] 点击{操作按钮}",
-      "对应数据模型": "STEP 1 → SharedModel.{ActionResult}",
-
-      "请求参数": {
-        "{targetId}": "String - 目标ID - 来自 STEP 1 → {ContentItem}.{id}",
-        "{action}": "String(like|unlike|follow|unfollow) - 操作类型"
-      },
-
-      "响应数据": {
-        "code": "Number - 状态码",
-        "data": {
-          "_映射": "→ STEP 1: SharedModel.{ActionResult}",
-          "{success}": "Boolean - 是否成功",
-          "{newValue}": "Number? - 新的计数值（如点赞后的新数量）"
-        }
-      },
-
-      "数据库操作": {
-        "like": "INSERT INTO {关系表} + UPDATE {主体表}.like_count +1",
-        "unlike": "DELETE FROM {关系表} + UPDATE {主体表}.like_count -1"
-      }
-    }
-  ]
-}
-```
-
-### 常见页面类型的接口模式
-
-```
-📋 列表页接口组合：
-├── GET  /api/{module}/config         → PageModel.{TabData}
-├── GET  /api/{module}/list           → PageModel.{ListData}
-└── POST /api/{module}/{action}       → SharedModel.{ActionResult}
-
-📝 详情页接口组合：
-├── GET  /api/{module}/{id}           → PageModel.{DetailData}
-├── GET  /api/{module}/{id}/comments  → PageModel.{CommentListData}
-├── POST /api/{module}/{id}/comment   → SharedModel.{ActionResult}
-└── POST /api/{module}/{id}/{action}  → SharedModel.{ActionResult}
-
-✏️ 表单页接口组合：
-├── GET  /api/{module}/form-config    → PageModel.{FormConfig}
-├── GET  /api/{module}/{id}           → PageModel.{InitialData} (编辑模式)
-├── POST /api/{module}/upload         → {url, thumbnailUrl}
-├── POST /api/{module}/draft          → {draftId}
-└── POST /api/{module}/submit         → SharedModel.{ActionResult}
-
-🏠 聚合页接口组合：
-├── GET  /api/{module}/home           → PageModel (多区块)
-└── GET  /api/{module}/section/{type} → PageModel.{SectionData}
-```
-
-### 接口汇总表模板
-
-```markdown
-| 序号 | 接口标识 | 方法 | 路径 | 对应数据模型 | 触发时机 | 缓存 |
-|------|----------|------|------|--------------|----------|------|
-| 1 | {listApi} | GET | /api/{module}/list | {ListData} | 初始化/刷新/加载 | 无 |
-| 2 | {configApi} | GET | /api/{module}/config | {TabData} | 初始化 | 30min |
-| 3 | {actionApi} | POST | /api/{module}/{action} | {ActionResult} | 点击{操作} | 无 |
-```
-
----
-
-### 数据库设计
-
-#### 设计原则
+### 设计原则
 
 ```
 MVP = Minimum Viable Product（最小可行产品）
@@ -1372,146 +1107,115 @@ MVP = Minimum Viable Product（最小可行产品）
 └─ 一个页面通常只需要 3-5 张表
 ```
 
-#### 从数据模型推导数据库表
+### 从JSON契约推导数据库表
+
+> **核心思路**：JSON响应中的每个对象/嵌套结构通常对应一张表，状态字段通常需要关系表。
 
 ```
-STEP 1 数据模型                    →     数据库表推导
+STEP 1 的 JSON 响应              →     数据库表推导
 ─────────────────────────────────────────────────────────────
-{ContentItem}.{authorData}         →     users 表
-  ├─ {userId}                            ├─ id
-  ├─ {nickname}                          ├─ nickname
-  └─ {avatar}                            └─ avatar
-
-{ContentItem}.{mediaData/textData} →     {主体}表
-  ├─ {id}                                ├─ id
-  ├─ {coverUrl}                          ├─ cover_url
-  ├─ {title}                             ├─ title
-  └─ ...                                 └─ user_id (FK → users)
-
-{ContentItem}.{statsData}          →     冗余字段 + 关系表
-  ├─ {likeCount}                         {主体}表.like_count (冗余)
-  └─ {isLiked}                           {关系}表.user_id 判断
+{
+  "{relatedUser}": {             →     users 表（用户表几乎必需）
+    "userId": "...",                   ├─ id
+    "nickname": "...",                 ├─ nickname
+    "avatar": "..."                    └─ avatar
+  },
+  "{主体字段1}": "...",          →     {主体}表
+  "{主体字段2}": "...",                ├─ id
+  "{countField}": 88,                  ├─ user_id (FK → users)
+                                       ├─ {业务字段}...
+                                       └─ {count}_count (冗余计数)
+  "{statusField}": true/false    →     {关系}表（判断当前用户状态）
+}                                      ├─ {主体}_id
+                                       └─ user_id
 
 推导规则：
-├── 嵌套对象（如 authorData） → 独立表 + 外键关联
-├── 计数字段（如 likeCount） → 主体表冗余字段
-├── 状态字段（如 isLiked）   → 关系表判断当前用户
-└── 数组字段（如 tags）      → 子表 + 外键关联
+├── 嵌套对象 → 独立表 + 外键关联
+├── 计数字段 → 主体表冗余字段 + 关系表统计
+├── 状态字段(is_xxx) → 关系表(当前用户与主体的关系)
+└── 数组字段 → 子表 + 外键关联
 ```
 
-#### 数据库表模板
+### 数据库表模板
 
 ```sql
--- 用户表（对应 STEP 1: SharedModel.{UserInfo}）
+-- 用户表（几乎所有业务都需要）
 CREATE TABLE users (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    nickname    VARCHAR(50) NOT NULL COMMENT '昵称 → {nickname}',
-    avatar      VARCHAR(500) COMMENT '头像URL → {avatar}',
-    level       INT DEFAULT 1 COMMENT '等级 → {level}',
-    is_vip      TINYINT DEFAULT 0 COMMENT 'VIP状态 → {isVip}',
+    nickname    VARCHAR(50) NOT NULL COMMENT '昵称',
+    avatar      VARCHAR(500) COMMENT '头像URL',
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) COMMENT '用户表 → SharedModel.{UserInfo}';
+) COMMENT '用户表';
 
--- 内容/主体表（对应 STEP 1: ItemModel.{ContentItem}）
+-- 内容/主体表（根据业务命名：contents, posts, products...）
 CREATE TABLE {主体表名} (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    user_id     BIGINT NOT NULL COMMENT '创建者ID → {authorData}.{userId}',
-
-    -- 媒体数据 → {mediaData}
-    cover_url   VARCHAR(500) COMMENT '封面URL → {coverUrl}',
-    aspect_ratio DECIMAL(4,2) DEFAULT 1.0 COMMENT '宽高比 → {aspectRatio}',
-    duration    INT COMMENT '时长(秒) → {duration}',
-
-    -- 文本数据 → {textData}
-    title       VARCHAR(200) NOT NULL COMMENT '标题 → {title}',
-    description TEXT COMMENT '描述 → {description}',
-
-    -- 统计数据 → {statsData} (冗余字段)
-    like_count  INT UNSIGNED DEFAULT 0 COMMENT '点赞数 → {likeCount}',
-    comment_count INT UNSIGNED DEFAULT 0 COMMENT '评论数 → {commentCount}',
-
-    -- 元信息 → {metaData}
-    type        VARCHAR(20) DEFAULT 'image' COMMENT '类型 → {type}',
-    location    VARCHAR(100) COMMENT '位置 → {location}',
+    user_id     BIGINT NOT NULL COMMENT '创建者ID',
+    -- 业务字段...
+    {count}_count INT UNSIGNED DEFAULT 0 COMMENT 'XX计数(冗余)',
     status      TINYINT DEFAULT 1 COMMENT '状态: 0=删除, 1=正常',
-    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '→ {createTime}',
+    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     INDEX idx_user_id (user_id),
     INDEX idx_status_created (status, created_at DESC)
-) COMMENT '{主体}表 → ItemModel.{ContentItem}';
+) COMMENT '{主体}表';
 
--- 关系表（用于判断 STEP 1: {statsData}.{isLiked} 等状态）
-CREATE TABLE {主体}_likes (
+-- 关系表（关注、点赞、收藏等）
+CREATE TABLE {关系表名} (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    {主体}_id   BIGINT NOT NULL COMMENT '主体ID',
-    user_id     BIGINT NOT NULL COMMENT '用户ID',
+    {主体}_id   BIGINT NOT NULL,
+    user_id     BIGINT NOT NULL,
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
 
-    UNIQUE KEY uk_like ({主体}_id, user_id),
+    UNIQUE KEY uk_{关系} ({主体}_id, user_id),
     INDEX idx_user_id (user_id)
-) COMMENT '点赞关系表 → 判断 {isLiked}';
+) COMMENT '{关系}表';
 ```
 
-#### 核心SQL模板
+### 核心SQL模板
 
 ```sql
--- 列表查询（返回 STEP 1: PageModel.{ListData}）
+-- 列表查询（带关联用户信息 + 当前用户操作状态）
 SELECT
-    -- {ContentItem}.{id}
     m.id,
-
-    -- {ContentItem}.{mediaData}
-    m.cover_url AS coverUrl,
-    m.aspect_ratio AS aspectRatio,
-    m.duration,
-
-    -- {ContentItem}.{textData}
-    m.title,
-    m.description,
-
-    -- {ContentItem}.{authorData} ← JOIN users
-    u.id AS authorUserId,
-    u.nickname AS authorNickname,
-    u.avatar AS authorAvatar,
-
-    -- {ContentItem}.{statsData}
-    m.like_count AS likeCount,
-    m.comment_count AS commentCount,
-    IF(l.id IS NOT NULL, 1, 0) AS isLiked,  -- ← LEFT JOIN 关系表
-
-    -- {ContentItem}.{metaData}
-    m.type,
-    m.location,
-    m.created_at AS createTime
-
+    m.{业务字段},
+    m.{count}_count,
+    m.created_at,
+    -- 关联用户
+    u.id AS author_id,
+    u.nickname AS author_nickname,
+    u.avatar AS author_avatar,
+    -- 当前用户是否已操作（点赞/收藏/关注）
+    IF(r.id IS NOT NULL, 1, 0) AS is_{action}
 FROM {主体表} m
 INNER JOIN users u ON m.user_id = u.id
-LEFT JOIN {主体}_likes l ON m.id = l.{主体}_id AND l.user_id = #{currentUserId}
+-- 可选：筛选条件（如只查关注的人）
+-- INNER JOIN follows f ON m.user_id = f.following_id AND f.follower_id = #{currentUserId}
+LEFT JOIN {关系表} r ON m.id = r.{主体}_id AND r.user_id = #{currentUserId}
 WHERE m.status = 1
 ORDER BY m.created_at DESC
 LIMIT #{pageSize} OFFSET #{offset};
 
--- 点赞操作（更新 {isLiked} 和 {likeCount}）
--- like:
-INSERT INTO {主体}_likes ({主体}_id, user_id) VALUES (#{id}, #{userId});
-UPDATE {主体表} SET like_count = like_count + 1 WHERE id = #{id};
+-- 操作：新增关系
+INSERT INTO {关系表} ({主体}_id, user_id) VALUES (#{id}, #{userId});
+UPDATE {主体表} SET {count}_count = {count}_count + 1 WHERE id = #{id};
 
--- unlike:
-DELETE FROM {主体}_likes WHERE {主体}_id = #{id} AND user_id = #{userId};
-UPDATE {主体表} SET like_count = GREATEST(like_count - 1, 0) WHERE id = #{id};
+-- 操作：删除关系
+DELETE FROM {关系表} WHERE {主体}_id = #{id} AND user_id = #{userId};
+UPDATE {主体表} SET {count}_count = GREATEST({count}_count - 1, 0) WHERE id = #{id};
 ```
 
 ### 后端MVP清单模板
 
-```markdown
-| 序号 | 功能 | 对应数据模型 | 涉及表 | 接口 | 优先级 |
-|------|------|--------------|--------|------|--------|
-| 1 | 列表查询 | {ListData} | users, {主体表} | GET /list | P0 |
-| 2 | 配置获取 | {TabData} | {config表} | GET /config | P0 |
-| 3 | 点赞操作 | {ActionResult} | {关系表}, {主体表} | POST /like | P0 |
-| 4 | 分页支持 | {PaginationInfo} | - | query params | P0 |
+```
+| 序号 | 功能 | 涉及表 | 接口 | 优先级 |
+|------|------|--------|------|--------|
+| 1 | 列表查询 | users, {主体表} | GET /list | P0 |
+| 2 | 操作功能 | {关系表} | POST /action | P0 |
+| 3 | 分页加载 | - | query params | P0 |
+| 4 | 状态判断 | {关系表} | 列表返回 | P0 |
 
 MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 ```
@@ -1540,25 +1244,6 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 
 ## 💡 快速参考
 
-### 符号系统
-
-```
-元素标记：
-【页面】📱   《组件》📋   「按钮/功能」   (注：说明)
-
-标注语法：
-├── 位置: [位置:TL/TC/TR/ML/MC/MR/BL/BC/BR]
-├── 行列: [R1-C2] [R1:R3-全行] [R-Last]
-├── 布局: [布局:flex-row] [布局:grid-cols-2] [gap-12px]
-├── 层级: [L1-页面] [L2-区域] [L3-基础]
-├── 拆分: [拆分:3个L3] [1模板x4实例] ← 复用XXX
-├── 相对: [↗️右上角] [➡️右侧] [⬇️下方] [间距:12px]
-├── 尺寸: [尺寸:48x48px] [高度:56px] [圆角:12px]
-├── 样式: (白色背景+圆角12px+阴影2px) (16sp#333333粗体)
-├── 数据: [data:字段名] ← 绑定 STEP 1 数据模型
-└── 接口: [API:xxx] ← 调用 STEP 6 接口
-```
-
 ### 描述流程
 ```
 1. 层级 [L1/L2/L3]
@@ -1567,8 +1252,8 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 4. 尺寸 [尺寸:48x48px]
 5. 样式 (白色+圆角12px)
 6. 相对 [↗️XXX右上角]
-7. 数据 [data:fieldName] ← 绑定 STEP 1
-8. 交互 点击→跳转 ← 关联 STEP 2
+7. 数据 [data:fieldName]  ← 新增
+8. 交互 点击→跳转
 9. 复用 ← 复用XXX
 ```
 
@@ -1602,7 +1287,7 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 ```
 评分维度              优秀(9-10)              良好(7-8)           合格(5-6)
 ─────────────────────────────────────────────────────────────────────────────
-数据模型      模型完整+字段绑定UI     模型完整            主要模型有定义
+JSON契约      接口完整+字段绑定UI     接口完整            主要接口有定义
 结构完整性    所有元素都有层级标注    90%元素有标注       主要元素有标注
 数据绑定      所有动态数据有标注      主要数据有标注      有部分标注
 位置精确度    精确到像素和间距        有行列和九宫格      有大致位置
@@ -1610,7 +1295,7 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 复用标记      模板和实例标记完整      主要复用有标记      有部分标记
 交互描述      所有交互都有描述        主要交互有描述      有基本交互
 代码映射      完整对应文件结构        主要组件有映射      有基本映射
-接口+后端    接口对应模型+表SQL完整   有接口和表结构      有基本设计
+后端MVP       表+SQL+接口完整         有表结构和接口      有基本设计
 ```
 
 ### 综合评分目标
@@ -1618,14 +1303,14 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 🎯 目标分数：8分以上
 
 达到8分标准：
-├─ 数据模型覆盖所有组件，字段与UI绑定清晰
-├─ 流程图清晰标注数据流转和接口调用
+├─ JSON契约覆盖所有接口，字段与UI绑定清晰
 ├─ 树状图覆盖所有可见元素，标注数据来源
 ├─ 每个元素都有位置和尺寸描述
 ├─ 组件拆分层级清晰（L1→L2→L3）
 ├─ 复用关系标记完整
+├─ 交互流程描述清晰，与接口对应
 ├─ 代码结构可直接指导开发
-└─ 接口对应数据模型，数据库可直接建表
+└─ 后端MVP可直接建表和实现接口
 ```
 
 ---
@@ -1643,31 +1328,24 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 
 ---
 
-## 📋 STEP 1: 页面数据模型
+## 📋 STEP 1: JSON数据契约
 
-### PageModel
-[页面级数据模型JSON]
+[接口列表JSON]
 
-### ItemModel
-[列表项数据模型JSON]
-
-### 数据模型汇总
-| 模型名 | 层级 | 对应组件 | 说明 |
+### 接口汇总表
+| 序号 | 接口名 | 方法 | 路径 | 触发时机 |
 
 ---
 
 ## 🔄 STEP 2: 流程图
 
-[用户操作流程 - 标注数据模型和组件关联]
-
-### 流程-数据关联表
-| 流程节点 | 触发组件 | 数据模型 | 影响组件 |
+[用户操作流程 - 与接口调用对应]
 
 ---
 
 ## 🌳 STEP 3: 树状图
 
-[带数据绑定的树状图 - 标注 → STEP 1 数据模型]
+[带数据绑定的树状图]
 
 ---
 
@@ -1683,22 +1361,16 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 
 ---
 
-## 🗄️ STEP 6: 接口实现与后端设计
-
-### 接口定义
-[接口列表JSON - 对应 STEP 1 数据模型]
-
-### 接口汇总表
-| 序号 | 接口标识 | 方法 | 路径 | 对应数据模型 | 触发时机 |
+## 🗄️ STEP 6: 后端MVP
 
 ### 数据库表设计
-[建表SQL - 字段对应 STEP 1 数据模型]
+[建表SQL]
 
 ### 核心SQL查询
 [查询SQL]
 
 ### MVP清单
-| 序号 | 功能 | 对应数据模型 | 涉及表 | 接口 | 优先级 |
+| 序号 | 功能 | 涉及表 | 接口 | 优先级 |
 
 ---
 
@@ -1709,20 +1381,7 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 
 ---
 
-*v5.4 - JSON契约优先 + 六步法 + 后端MVP = 完整开发指导*
-
-*v5.4更新：*
-- *精简 STEP 1：条件/格式化/计算字段模式合并为速查表*
-- *补充 STEP 1：新增聚合页数据模型示例（示例D）*
-- *补充 STEP 3：新增详情页/表单页/聚合页树状图变体*
-- *整合组件拆分：从独立章节合并到 STEP 3 末尾*
-
-*v5.3更新：*
-- *新增六步关联图：清晰展示 STEP 1-6 的横向关联关系*
-- *修正 STEP 2 引用：流程图中的接口调用现正确指向 STEP 6*
-- *统一术语：STEP 1 = 数据模型(What)，STEP 6 = 接口实现(How)*
-- *整合符号系统：移至快速参考部分，新增 [API:xxx] 标注*
-- *强化服务层关联：STEP 3/5 的 api/ 说明现指向 STEP 6*
+*v5.2 - JSON契约优先 + 六步法 + 后端MVP = 完整开发指导*
 
 *v5.2更新：*
 - *通用化改造：将具体示例改为`{占位符}`格式，适用于任意业务场景*
@@ -1730,140 +1389,3 @@ MVP统计：{N}张表 + {M}个接口 = 最小可行后端
 - *树状图增加三种模式：网格列表、垂直列表、表单*
 - *条件字段标注改为通用模式说明*
 - *修正Features→Modules命名一致性*
-
----
-
-## ⚠️ 重要要求
-
-### 输出要求：必须产出完整文档
-
-**收到UI图/设计稿后，必须严格按照六步法输出一份完整、连贯的结构指导文档，不得遗漏任何步骤。**
-
-```
-✅ 必须包含的内容（缺一不可）：
-
-┌─────────────────────────────────────────────────────────────────────────┐
-│  □ STEP 1: 页面数据模型                                                  │
-│     ├── PageModel 完整定义                                               │
-│     ├── ItemModel 完整定义                                               │
-│     ├── SharedModel（如有复用）                                          │
-│     └── 数据模型汇总表                                                   │
-├─────────────────────────────────────────────────────────────────────────┤
-│  □ STEP 2: 流程图                                                        │
-│     ├── 页面初始化流程                                                   │
-│     ├── 用户交互路径（所有可点击元素）                                    │
-│     ├── 状态管理流程                                                     │
-│     └── 流程-组件关联表                                                  │
-├─────────────────────────────────────────────────────────────────────────┤
-│  □ STEP 3: 树状图                                                        │
-│     ├── L1/L2/L3 完整层级结构                                            │
-│     ├── 每个组件的文件路径                                               │
-│     ├── 数据绑定标注 [data:字段名]                                       │
-│     └── 复用关系标注                                                     │
-├─────────────────────────────────────────────────────────────────────────┤
-│  □ STEP 4: 布局定位                                                      │
-│     ├── 页面整体布局图（ASCII可视化）                                    │
-│     ├── 各区域布局详图                                                   │
-│     ├── 九宫格/行列位置标注                                              │
-│     └── Flex/Grid 布局规则                                               │
-├─────────────────────────────────────────────────────────────────────────┤
-│  □ STEP 5: 代码结构                                                      │
-│     ├── 完整文件夹/文件树                                                │
-│     ├── 🟢简单区域 vs 🔵复杂区域 划分                                    │
-│     ├── 每个文件对应的布局模板                                           │
-│     └── 文件命名规范说明                                                 │
-├─────────────────────────────────────────────────────────────────────────┤
-│  □ STEP 6: 接口实现与后端设计                                            │
-│     ├── 完整接口定义（JSON格式）                                         │
-│     ├── 接口汇总表                                                       │
-│     ├── 数据库表设计（建表SQL）                                          │
-│     ├── 核心SQL查询                                                      │
-│     └── MVP清单表                                                        │
-├─────────────────────────────────────────────────────────────────────────┤
-│  □ 质量评估                                                              │
-│     └── 按评分维度自评（数据模型、结构、布局、接口等）                    │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-### 输出格式要求
-
-```
-1. 文档结构
-   ├── 必须使用 Markdown 格式
-   ├── 必须包含文档头部信息（页面名称、所属模块、页面类型）
-   ├── 六个 STEP 必须按顺序完整输出
-   └── 每个 STEP 必须有清晰的分隔线 ---
-
-2. 内容深度
-   ├── 数据模型：字段级别完整定义，包含类型、说明、UI绑定
-   ├── 流程图：覆盖所有用户可执行的操作路径
-   ├── 树状图：覆盖UI上所有可见元素
-   ├── 布局图：提供ASCII可视化，标注尺寸和间距
-   ├── 代码结构：可直接用于创建项目文件夹
-   └── 后端设计：SQL可直接执行建表
-
-3. 关联性
-   ├── STEP 1 数据模型 ↔ STEP 3 组件 [data:字段] 绑定必须对应
-   ├── STEP 2 流程 [API:xxx] ↔ STEP 6 接口定义必须对应
-   ├── STEP 3 组件路径 ↔ STEP 5 代码文件必须对应
-   └── STEP 6 接口响应 ↔ STEP 1 数据模型必须对应
-```
-
-### 禁止事项
-
-```
-❌ 禁止只输出部分 STEP（如只输出树状图不输出数据模型）
-❌ 禁止使用"略"、"同上"、"参考XXX"等省略写法
-❌ 禁止遗漏数据绑定标注
-❌ 禁止接口定义与数据模型不对应
-❌ 禁止代码结构与树状图组件不匹配
-❌ 禁止输出无法执行的SQL语句
-```
-
-### 输出检查清单
-
-**在输出文档前，必须自检以下项目：**
-
-```
-□ 文档是否包含完整的六个 STEP？
-□ STEP 1 数据模型是否覆盖页面所有动态数据？
-□ STEP 2 流程图是否标注了所有 [API:xxx] 调用？
-□ STEP 3 树状图是否每个动态元素都有 [data:字段] 标注？
-□ STEP 4 布局图是否提供了可视化 ASCII 图？
-□ STEP 5 代码结构是否可以直接创建文件夹？
-□ STEP 6 接口响应是否与 STEP 1 数据模型一一对应？
-□ STEP 6 数据库表字段是否与数据模型字段对应？
-□ 各 STEP 之间的引用关系是否正确？
-□ 是否提供了质量自评？
-```
-
----
-
-**⚡ 一句话总结：收到UI图后，必须输出一份包含六个完整STEP的结构指导文档，确保前后端可直接依据文档进行开发。**
-
----
-
-### 📄 文档保存要求
-
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│  ⚠️ 必须将输出文档保存为 Markdown 文件                                    │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  保存规范：                                                               │
-│  ├── 文件格式：.md (Markdown)                                            │
-│  ├── 文件命名：{页面名称}_结构文档.md                                     │
-│  │             示例：发现页_结构文档.md、用户中心_结构文档.md              │
-│  ├── 保存路径：与项目文档目录对应                                         │
-│  └── 编码格式：UTF-8                                                     │
-│                                                                          │
-│  保存时机：                                                               │
-│  ├── 完成六步法输出后，立即保存为文件                                     │
-│  ├── 不得仅在对话中输出而不保存文件                                       │
-│  └── 保存后告知用户文件路径                                               │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
-```
-
-**❌ 禁止：仅在对话中输出文档内容而不保存到文件**
-**✅ 必须：使用工具将完整文档写入 .md 文件并告知用户保存路径**
